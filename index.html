@@ -2,7 +2,7 @@
 <html lang="fr" data-theme="auto">
 <head>
   <meta charset="utf-8" />
-  <title>TDT v2.6</title>
+  <title>TDT v3.0</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
   <meta name="theme-color" content="#0a84ff" />
   <style>
@@ -31,52 +31,66 @@
       background:linear-gradient(180deg,var(--upper) 0%, var(--page) 420px, var(--page) 100%);
     }
 
-    /* Header (au-dessus du tableau) */
-    header{position:sticky;top:0;z-index:40;background:var(--upper);border-bottom:1px solid var(--border);
-           padding:calc(4px + env(safe-area-inset-top)) 12px 4px}
-    h1{margin:0;font-size:1rem;font-weight:700;display:flex;align-items:center;gap:6px}
+    /* ===== HEADER (titre + compteurs) ===== */
+    header{
+      position:sticky;top:0;z-index:40;background:var(--upper);border-bottom:1px solid var(--border);
+      padding:calc(4px + env(safe-area-inset-top)) 12px 4px
+    }
+    h1{
+      margin:0;
+      font-size:1rem;font-weight:700;
+      display:flex;align-items:center;gap:8px; /* 1) aligner parfaitement la rangée du titre */
+    }
     .version{font-size:.8rem;color:var(--sub)}
+    .copyright{margin-left:6px;font-size:.8rem;color:var(--sub)}
+    .spacer{flex:1} /* pousse les éléments à droite pour un alignement net */
+    .counters{display:flex;gap:8px;align-items:center}
+    .counter{
+      width:28px;height:28px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;font-size:.8rem;color:#111;
+      border:2px solid transparent;box-shadow:0 1px 2px rgba(0,0,0,.12);
+    }
+    .counter.green  { background:#d9fadd; border-color:var(--ok); }
+    .counter.yellow { background:#fff8d4; border-color:var(--warn); }
+    .counter.red    { background:#ffe0e0; border-color:var(--bad); }
 
+    /* WRAP + CARD */
     .wrap{max-width:1100px;margin:0 auto;padding:12px 12px calc(var(--fab-h) + 16px)}
     .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 
-    /* 1ère ligne : actions + stats */
-    .toolbar{display:flex;gap:8px;padding:8px;align-items:center;flex-wrap:wrap;
-             background:var(--upper);border-bottom:1px solid var(--border)}
-    .btn{height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--border);background:#fff;font-size:.88rem;font-weight:600;cursor:pointer}
+    /* TOOLBAR (boutons sous le titre) — alignés proprement */
+    .toolbar{
+      display:flex;gap:8px;padding:8px;align-items:center;flex-wrap:wrap;
+      background:var(--upper);border-bottom:1px solid var(--border)
+    }
+    .btn{
+      height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--border);
+      background:#fff;font-size:.88rem;font-weight:600;cursor:pointer
+    }
     .btn.primary{background:linear-gradient(180deg,#0a84ff,#007aff);color:#fff;border:none}
     .stat{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--border);padding:4px 10px;border-radius:999px;font-weight:600}
 
-    /* Formulaire d'ajout compact */
+    /* FORMULAIRE D’AJOUT COMPACT */
     form.add{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:8px;padding:8px;background:var(--upper);border-bottom:1px solid var(--border)}
     label{font-size:.78rem;color:var(--sub);margin:0 0 4px}
     input{width:100%;height:38px;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:#fff;font-size:1rem}
 
-    /* Table compacte */
+    /* TABLE */
     .tblWrap{max-height:60svh;overflow:auto}
     table{width:100%;border-collapse:separate;border-spacing:0;min-width:520px}
     thead th{
-      position:sticky;
-      top:0;
-      z-index:5; /* sous les bandeaux */
-      background:var(--head-dark);
-      color:#f2f2f7;
-      padding:6px 8px;
-      font-size:.75rem;
-      text-align:left;
+      position:sticky;top:0;z-index:5;background:var(--head-dark);color:#f2f2f7;
+      padding:6px 8px;font-size:.75rem;text-align:left
     }
     tbody td{
-      padding:6px 8px;
-      border-bottom:1px solid var(--border);
-      font-size:.9rem;
-      position:relative; /* corrige le chevauchement des cases */
-      z-index:1;
+      padding:6px 8px;border-bottom:1px solid var(--border);font-size:.9rem;position:relative;z-index:1;
     }
     tbody tr:nth-child(odd){background:var(--zebra1)}
     tbody tr:nth-child(even){background:var(--zebra2)}
     .hiddenCol{display:none}
 
-    /* Largeurs resserrées */
+    /* Largeurs */
     .col-name{min-width:150px;max-width:210px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .th-tel{width:100px}
     .th-mail{width:140px}
@@ -94,68 +108,41 @@
     .rowActions{display:flex;gap:4px}
     .rowActions .btn{height:28px;padding:0 6px;font-size:.75rem;border-radius:8px}
 
-    /* Barre basse (au-dessus du tableau) */
-    .fabBar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(245,245,247,.96);backdrop-filter:blur(8px);border-top:1px solid var(--border);
-            padding:8px;display:flex;gap:8px}
+    /* Barre basse */
+    .fabBar{
+      position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(245,245,247,.96);
+      backdrop-filter:blur(8px);border-top:1px solid var(--border);
+      padding:8px;display:flex;gap:8px
+    }
     .fabBar .btn{flex:1}
 
-    /* Feuilles (sheets) */
+    /* Sheets */
     .sheet{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;color:#111;
-           border-radius:12px 12px 0 0;box-shadow:0 -6px 20px rgba(0,0,0,.25);transform:translateY(100%);transition:.25s;padding:12px;max-height:70svh;overflow:auto}
+      border-radius:12px 12px 0 0;box-shadow:0 -6px 20px rgba(0,0,0,.25);transform:translateY(100%);transition:.25s;padding:12px;max-height:70svh;overflow:auto}
     .sheet.show{transform:translateY(0)}
     .sheet h3{margin:0 0 10px}
     .sheet .row{display:grid;grid-template-columns:120px 1fr;gap:10px;margin-bottom:10px}
     .sheet .actions{display:flex;gap:10px;justify-content:flex-end}
 
     .toast{position:fixed;bottom:calc(var(--fab-h) + 12px);right:16px;background:#111;color:#fff;
-           padding:8px 12px;border-radius:8px;opacity:0;transition:.25s}
+      padding:8px 12px;border-radius:8px;opacity:0;transition:.25s}
     .toast.show{opacity:1}
-.counters {
-  margin-left:auto;
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-
-.counter {
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  font-size:.8rem;
-  color:#111;
-  border:2px solid transparent;
-  box-shadow:0 1px 2px rgba(0,0,0,.1);
-}
-
-.counter.green  {
-  background:#d9fadd;    /* vert pastel */
-  border-color:#28cd41;
-}
-.counter.yellow {
-  background:#fff8d4;    /* jaune pastel */
-  border-color:#ffcc00;
-}
-.counter.red    {
-  background:#ffe0e0;    /* rouge pastel */
-  border-color:#ff3b30;
-}
   </style>
 </head>
 <body>
+
+  <!-- ===== HEADER aligné + 2) © + 3) compteurs ===== -->
   <header>
     <h1>
-  <span>TDT <span class="version" id="version">v3.0</span></span>
-  <span style="margin-left:8px;font-size:0.8rem;color:var(--sub)">© Pierre Charlier 2025</span>
-  <div class="counters">
-    <div class="counter green" id="countGreen">0</div>
-    <div class="counter yellow" id="countYellow">0</div>
-    <div class="counter red" id="countRed">0</div>
-  </div>
-</h1>
+      <span>TDT <span class="version" id="version">v3.0</span></span>
+      <span class="copyright">© Pierre Charlier 2025</span>
+      <span class="spacer"></span>
+      <div class="counters">
+        <div class="counter green"  id="countGreen">0</div>
+        <div class="counter yellow" id="countYellow">0</div>
+        <div class="counter red"    id="countRed">0</div>
+      </div>
+    </h1>
   </header>
 
   <div class="wrap">
@@ -234,11 +221,14 @@
 
   <div id="toast" class="toast">✔️</div>
 
-<script>
+  <!-- === SCRIPT dans le bloc 2 === -->
+  <script>
 /* ===== Version / stockage ===== */
 const VERSION='3.0';
 document.getElementById('version').textContent='v'+VERSION;
-const STORAGE_KEY='tdtl_v_'+VERSION.replaceAll('.','_');
+
+// 4) Clé STABLE (ne change pas avec la version) + migration depuis anciennes clés
+const STORAGE_KEY='tdtl_state';
 
 /* ===== Helpers ===== */
 const $ = s => document.querySelector(s);
@@ -248,7 +238,29 @@ const phoneValid = v => !v || /^04\d{8}$/.test(String(v||'').trim());
 const emailValid = v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||'').trim());
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1200); }
 
+/* ===== Migration anciennes clés versionnées vers la clé stable ===== */
+function migrateOldKeys(){
+  try{
+    if(localStorage.getItem(STORAGE_KEY)) return; // déjà migré
+    const candidates = [];
+    for (let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      if(/^tdtl_v_\d+_\d+$/.test(k)){
+        try{
+          const obj = JSON.parse(localStorage.getItem(k) || 'null');
+          if (obj && Array.isArray(obj.players)) candidates.push({k,obj});
+        }catch{}
+      }
+    }
+    if (candidates.length){
+      candidates.sort((a,b)=>(b.obj.players?.length||0)-(a.obj.players?.length||0));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(candidates[0].obj));
+    }
+  }catch{}
+}
+
 /* ===== État ===== */
+migrateOldKeys();
 let state = loadState();
 function loadState(){
   try{ const raw=localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
@@ -262,7 +274,7 @@ function loadState(){
 }
 function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
-/* ===== Tri alphabétique (Nom, Prénom) ===== */
+/* ===== Tri alphabétique ===== */
 const normalize = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function sortPlayers(){
   state.players.sort((a,b)=>{
@@ -283,6 +295,7 @@ function badgeClass(p){
   if(m>0) return 'green';
   return '';
 }
+
 function render(){
   // Toggles d'options
   $('#toggleTel').textContent     = state.hideTel     ? 'Afficher' : 'Masquer';
@@ -294,15 +307,20 @@ function render(){
   $('.th-actions')?.classList.toggle('hiddenCol', state.hideActions);
 
   const tbody = $('#tbody'); tbody.textContent='';
-  if(state.players.length===0) $('#empty').style.display='block'; else $('#empty').style.display='none';
+  $('#empty').style.display = state.players.length===0 ? 'block' : 'none';
+
+  // 3) Compteurs ronds : reset à chaque rendu
+  let cnt = { green:0, yellow:0, red:0 };
 
   state.players.forEach(p=>{
     const tr = document.createElement('tr');
 
-    // Nom & Prénom (clic => fiche)
+    // Nom & Prénom
     const tdName = document.createElement('td'); tdName.className='col-name';
     const nameBox = document.createElement('div'); nameBox.className='nameCell'; nameBox.title='Éditer';
-    const badge = document.createElement('span'); badge.className='nameBadge ' + badgeClass(p);
+    const bc = badgeClass(p);
+    const badge = document.createElement('span'); badge.className='nameBadge ' + bc;
+    if (bc==='green') cnt.green++; else if(bc==='yellow') cnt.yellow++; else if(bc==='red') cnt.red++;
     const nameText = document.createElement('span'); nameText.textContent = `${p.nom.toUpperCase()} ${p.prenom}`;
     nameBox.append(badge, nameText); tdName.appendChild(nameBox); tr.appendChild(tdName);
     nameBox.addEventListener('click', ()=> openRowSheet(p.id));
@@ -345,6 +363,11 @@ function render(){
   $('#statInscrits').textContent = String(inscrits);
   $('#statPresents').textContent = String(presents);
   $('#statTotal').textContent    = fmt(total)+' €';
+
+  // Affichage des 3 ronds
+  document.getElementById('countGreen').textContent  = cnt.green;
+  document.getElementById('countYellow').textContent = cnt.yellow;
+  document.getElementById('countRed').textContent    = cnt.red;
 }
 
 /* ===== Sheet ligne ===== */
@@ -543,6 +566,6 @@ function mapCsvRows(rows){
 
 /* ===== Init ===== */
 sortPlayers(); render();
-</script>
+  </script>
 </body>
 </html>
