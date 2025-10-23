@@ -110,13 +110,51 @@
     .toast{position:fixed;bottom:calc(var(--fab-h) + 12px);right:16px;background:#111;color:#fff;
            padding:8px 12px;border-radius:8px;opacity:0;transition:.25s}
     .toast.show{opacity:1}
+.counters {
+  margin-left:auto;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.counter {
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:.8rem;
+  color:#111;
+  border:2px solid transparent;
+  box-shadow:0 1px 2px rgba(0,0,0,.1);
+}
+
+.counter.green  {
+  background:#d9fadd;    /* vert pastel */
+  border-color:#28cd41;
+}
+.counter.yellow {
+  background:#fff8d4;    /* jaune pastel */
+  border-color:#ffcc00;
+}
+.counter.red    {
+  background:#ffe0e0;    /* rouge pastel */
+  border-color:#ff3b30;
+}
   </style>
 </head>
 <body>
   <header>
     <h1>
-  TDT <span class="version" id="version">v2.6</span>
+  <span>TDT <span class="version" id="version">v3.0</span></span>
   <span style="margin-left:8px;font-size:0.8rem;color:var(--sub)">© Pierre Charlier 2025</span>
+  <div class="counters">
+    <div class="counter green" id="countGreen">0</div>
+    <div class="counter yellow" id="countYellow">0</div>
+    <div class="counter red" id="countRed">0</div>
+  </div>
 </h1>
   </header>
 
@@ -198,7 +236,7 @@
 
 <script>
 /* ===== Version / stockage ===== */
-const VERSION='2.6';
+const VERSION='3.0';
 document.getElementById('version').textContent='v'+VERSION;
 const STORAGE_KEY='tdtl_v_'+VERSION.replaceAll('.','_');
 
