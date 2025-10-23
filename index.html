@@ -2,7 +2,7 @@
 <html lang="fr" data-theme="auto">
 <head>
   <meta charset="utf-8" />
-  <title>TDT v3.0</title>
+  <title>TDT v3.2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
   <meta name="theme-color" content="#0a84ff" />
   <style>
@@ -31,19 +31,19 @@
       background:linear-gradient(180deg,var(--upper) 0%, var(--page) 420px, var(--page) 100%);
     }
 
-    /* ===== HEADER (titre + compteurs) ===== */
+    /* ===== HEADER ===== */
     header{
-      position:sticky;top:0;z-index:40;background:var(--upper);border-bottom:1px solid var(--border);
+      position:sticky;top:0;z-index:40;background:var(--upper);
+      border-bottom:1px solid var(--border);
       padding:calc(4px + env(safe-area-inset-top)) 12px 4px
     }
     h1{
-      margin:0;
-      font-size:1rem;font-weight:700;
-      display:flex;align-items:center;gap:8px; /* 1) aligner parfaitement la rangée du titre */
+      margin:0;font-size:1rem;font-weight:700;
+      display:flex;align-items:center;gap:8px;
     }
     .version{font-size:.8rem;color:var(--sub)}
     .copyright{margin-left:6px;font-size:.8rem;color:var(--sub)}
-    .spacer{flex:1} /* pousse les éléments à droite pour un alignement net */
+    .spacer{flex:1}
     .counters{display:flex;gap:8px;align-items:center}
     .counter{
       width:28px;height:28px;border-radius:50%;
@@ -51,78 +51,56 @@
       font-weight:700;font-size:.8rem;color:#111;
       border:2px solid transparent;box-shadow:0 1px 2px rgba(0,0,0,.12);
     }
-    .counter.green  { background:#d9fadd; border-color:var(--ok); }
-    .counter.yellow { background:#fff8d4; border-color:var(--warn); }
-    .counter.red    { background:#ffe0e0; border-color:var(--bad); }
+    .counter.green  {background:#d9fadd;border-color:var(--ok);}
+    .counter.yellow {background:#fff8d4;border-color:var(--warn);}
+    .counter.red    {background:#ffe0e0;border-color:var(--bad);}
 
-    /* WRAP + CARD */
     .wrap{max-width:1100px;margin:0 auto;padding:12px 12px calc(var(--fab-h) + 16px)}
     .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 
-    /* TOOLBAR (boutons sous le titre) — alignés proprement */
     .toolbar{
-      display:flex;gap:8px;padding:8px;align-items:center;flex-wrap:wrap;
+      display:flex;gap:6px;padding:8px;align-items:center;flex-wrap:wrap;
       background:var(--upper);border-bottom:1px solid var(--border)
     }
+
     .btn{
-      height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--border);
-      background:#fff;font-size:.88rem;font-weight:600;cursor:pointer
+      height:28px;
+      width:34px;
+      padding:0;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:1rem;
+      cursor:pointer;
+      line-height:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
     .btn.primary{background:linear-gradient(180deg,#0a84ff,#007aff);color:#fff;border:none}
+    .btn.danger{background:#ff3b30;color:#fff;border:none}
+    .btn.locked{background:#d1d1d6;color:#666;border:none}
+
     .stat{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--border);padding:4px 10px;border-radius:999px;font-weight:600}
 
-    /* FORMULAIRE D’AJOUT COMPACT */
     form.add{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:8px;padding:8px;background:var(--upper);border-bottom:1px solid var(--border)}
     label{font-size:.78rem;color:var(--sub);margin:0 0 4px}
     input{width:100%;height:38px;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:#fff;font-size:1rem}
 
-    /* TABLE */
     .tblWrap{max-height:60svh;overflow:auto}
     table{width:100%;border-collapse:separate;border-spacing:0;min-width:520px}
     thead th{
       position:sticky;top:0;z-index:5;background:var(--head-dark);color:#f2f2f7;
       padding:6px 8px;font-size:.75rem;text-align:left
     }
-    tbody td{
-      padding:6px 8px;border-bottom:1px solid var(--border);font-size:.9rem;position:relative;z-index:1;
-    }
+    tbody td{padding:6px 8px;border-bottom:1px solid var(--border);font-size:.9rem}
     tbody tr:nth-child(odd){background:var(--zebra1)}
     tbody tr:nth-child(even){background:var(--zebra2)}
-    .hiddenCol{display:none}
 
-    /* Largeurs */
-    .col-name{min-width:150px;max-width:210px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .th-tel{width:100px}
-    .th-mail{width:140px}
-    .col-pres{width:64px;text-align:center}
-    .col-money{width:86px}
-    .col-actions{width:96px}
-
-    .nameCell{display:flex;align-items:center;gap:6px;cursor:pointer}
-    .nameBadge{width:10px;height:10px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.15)}
-    .nameBadge.green{background:#28cd41}.nameBadge.red{background:#ff3b30}.nameBadge.yellow{background:#ffcc00}
-
-    /* Cases à cocher plus petites */
-    .presentCell input[type="checkbox"]{transform:scale(.85)}
-
-    .rowActions{display:flex;gap:4px}
-    .rowActions .btn{height:28px;padding:0 6px;font-size:.75rem;border-radius:8px}
-
-    /* Barre basse */
-    .fabBar{
-      position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(245,245,247,.96);
+    .fabBar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(245,245,247,.96);
       backdrop-filter:blur(8px);border-top:1px solid var(--border);
-      padding:8px;display:flex;gap:8px
-    }
+      padding:8px;display:flex;gap:8px}
     .fabBar .btn{flex:1}
-
-    /* Sheets */
-    .sheet{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;color:#111;
-      border-radius:12px 12px 0 0;box-shadow:0 -6px 20px rgba(0,0,0,.25);transform:translateY(100%);transition:.25s;padding:12px;max-height:70svh;overflow:auto}
-    .sheet.show{transform:translateY(0)}
-    .sheet h3{margin:0 0 10px}
-    .sheet .row{display:grid;grid-template-columns:120px 1fr;gap:10px;margin-bottom:10px}
-    .sheet .actions{display:flex;gap:10px;justify-content:flex-end}
 
     .toast{position:fixed;bottom:calc(var(--fab-h) + 12px);right:16px;background:#111;color:#fff;
       padding:8px 12px;border-radius:8px;opacity:0;transition:.25s}
@@ -130,11 +108,9 @@
   </style>
 </head>
 <body>
-
-  <!-- ===== HEADER aligné + 2) © + 3) compteurs ===== -->
   <header>
     <h1>
-      <span>TDT <span class="version" id="version">v3.0</span></span>
+      <span>TDT <span class="version" id="version">v3.2</span></span>
       <span class="copyright">© Pierre Charlier 2025</span>
       <span class="spacer"></span>
       <div class="counters">
@@ -148,31 +124,33 @@
   <div class="wrap">
     <div class="card">
       <div class="toolbar">
-        <button class="btn" id="btnImport">Importer</button>
-        <button class="btn" id="btnOptions">Options</button>
+        <button class="btn" id="btnImport" title="Importer">📥</button>
+        <button class="btn" id="btnOptions" title="Options">⚙️</button>
+        <button class="btn" id="btnLock" title="Verrouiller">🔒</button>
+        <button class="btn danger" id="btnClearData" title="Effacer données">🧹</button>
         <span class="stat">Inscrits: <strong id="statInscrits">0</strong></span>
         <span class="stat">Présents: <strong id="statPresents">0</strong></span>
         <span class="stat">Total: <strong id="statTotal">0,00 €</strong></span>
       </div>
 
       <form class="add" id="addForm" novalidate>
-        <div><label>Prénom</label><input id="prenom" required placeholder="Jean" autocomplete="given-name"></div>
-        <div><label>Nom</label><input id="nom" required placeholder="Dupont" autocomplete="family-name"></div>
+        <div><label>Prénom</label><input id="prenom" required placeholder="Jean"></div>
+        <div><label>Nom</label><input id="nom" required placeholder="Dupont"></div>
         <div><label>Tel</label><input id="tel" maxlength="10" inputmode="numeric" placeholder="0412345678"></div>
         <div><label>Mail</label><input id="mail" type="email" placeholder="ex: joueur@mail.fr"></div>
-        <button class="btn primary" type="submit">Ajouter</button>
+        <button class="btn primary" type="submit">+</button>
       </form>
 
       <div class="tblWrap">
         <table>
           <thead>
             <tr>
-              <th class="col-name">Nom & Prénom</th>
-              <th class="th-tel">Téléphone</th>
-              <th class="th-mail">E-mail</th>
-              <th class="col-pres">Présent</th>
-              <th class="col-money">Montant (€)</th>
-              <th class="col-actions th-actions">Actions</th>
+              <th>Nom & Prénom</th>
+              <th>Téléphone</th>
+              <th>E-mail</th>
+              <th>Présent</th>
+              <th>Montant (€)</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="tbody"></tbody>
@@ -184,388 +162,132 @@
   </div>
 
   <div class="fabBar">
-    <button class="btn" id="exportNamesAmounts">Exporter</button>
-    <button class="btn primary" id="saveAll">Sauver</button>
-  </div>
-
-  <!-- Sheet Options & Import -->
-  <div id="sheetOptions" class="sheet" aria-hidden="true">
-    <h3>Options & Import</h3>
-    <div class="row"><label>Colonne Téléphone</label><button class="btn" id="toggleTel">Afficher</button></div>
-    <div class="row"><label>Colonne E-mail</label><button class="btn" id="toggleMail">Afficher</button></div>
-    <div class="row"><label>Colonne Actions</label><button class="btn" id="toggleActions">Afficher</button></div>
-    <hr style="border:none;border-top:1px solid var(--border);margin:10px 0">
-    <div class="row"><label>Fichier CSV</label><input type="file" id="csvFile" accept=".csv,text/csv" /></div>
-    <div class="row"><label>Mode import</label>
-      <select id="importMode"><option value="append">Ajouter</option><option value="replace">Remplacer</option></select>
-    </div>
-    <div class="actions">
-      <button class="btn" id="closeOptions">Fermer</button>
-      <button class="btn primary" id="importCsvBtn">Importer</button>
-    </div>
-  </div>
-
-  <!-- Sheet Édition -->
-  <div id="sheetRow" class="sheet" aria-hidden="true">
-    <h3 id="rowTitle">Édition</h3>
-    <div class="row"><label>Nom</label><input id="rowNom"></div>
-    <div class="row"><label>Prénom</label><input id="rowPrenom"></div>
-    <div class="row"><label>Tel</label><input id="rowTel" maxlength="10" inputmode="numeric" placeholder="04XXXXXXXX"></div>
-    <div class="row"><label>Mail</label><input id="rowMail" type="email" placeholder="ex: joueur@mail.fr"></div>
-    <div class="actions">
-      <button class="btn" id="rowCancel">Annuler</button>
-      <button class="btn primary" id="rowSave">Enregistrer</button>
-      <button class="btn" style="background:#fff0f0;color:#b10000;border-color:#ffd1d1" id="rowDelete">Supprimer</button>
-    </div>
+    <button class="btn" id="exportNamesAmounts" title="Exporter">📤</button>
+    <button class="btn primary" id="saveAll" title="Sauver">💾</button>
   </div>
 
   <div id="toast" class="toast">✔️</div>
-
-  <!-- === SCRIPT dans le bloc 2 === -->
   <script>
-/* ===== Version / stockage ===== */
-const VERSION='3.0';
+const VERSION='3.2';
 document.getElementById('version').textContent='v'+VERSION;
 
-// 4) Clé STABLE (ne change pas avec la version) + migration depuis anciennes clés
+/* Clé stable + migration */
 const STORAGE_KEY='tdtl_state';
-
-/* ===== Helpers ===== */
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-const fmt = n => (Number(n)||0).toLocaleString('fr-FR',{minimumFractionDigits:2, maximumFractionDigits:2});
-const phoneValid = v => !v || /^04\d{8}$/.test(String(v||'').trim());
-const emailValid = v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||'').trim());
-function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1200); }
-
-/* ===== Migration anciennes clés versionnées vers la clé stable ===== */
-function migrateOldKeys(){
-  try{
-    if(localStorage.getItem(STORAGE_KEY)) return; // déjà migré
-    const candidates = [];
-    for (let i=0;i<localStorage.length;i++){
-      const k = localStorage.key(i);
-      if(/^tdtl_v_\d+_\d+$/.test(k)){
-        try{
-          const obj = JSON.parse(localStorage.getItem(k) || 'null');
-          if (obj && Array.isArray(obj.players)) candidates.push({k,obj});
-        }catch{}
-      }
-    }
-    if (candidates.length){
-      candidates.sort((a,b)=>(b.obj.players?.length||0)-(a.obj.players?.length||0));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(candidates[0].obj));
-    }
-  }catch{}
-}
-
-/* ===== État ===== */
-migrateOldKeys();
-let state = loadState();
-function loadState(){
-  try{ const raw=localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
-  return {
-    players:[
-      {id:crypto.randomUUID(), prenom:'Pierre', nom:'CHARLIER', tel:'0412345678', mail:'', present:true,  montant:1},
-      {id:crypto.randomUUID(), prenom:'Coco',   nom:'CICI',      tel:'',          mail:'', present:true,  montant:0},
-    ],
-    hideTel:true, hideMail:true, hideActions:true
-  };
-}
-function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-
-/* ===== Tri alphabétique ===== */
-const normalize = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-function sortPlayers(){
-  state.players.sort((a,b)=>{
-    const an=normalize(a.nom), bn=normalize(b.nom);
-    if(an<bn) return -1; if(an>bn) return 1;
-    const ap=normalize(a.prenom), bp=normalize(b.prenom);
-    if(ap<bp) return -1; if(ap>bp) return 1;
-    return 0;
-  });
-}
-
-/* ===== Rendu ===== */
-function badgeClass(p){
-  if(!p.present) return '';
-  if(p.montant===null || p.montant==='' || typeof p.montant==='undefined') return 'yellow';
-  const m=Number(p.montant); if(isNaN(m)) return 'yellow';
-  if(m===0) return 'red';
-  if(m>0) return 'green';
-  return '';
-}
-
-function render(){
-  // Toggles d'options
-  $('#toggleTel').textContent     = state.hideTel     ? 'Afficher' : 'Masquer';
-  $('#toggleMail').textContent    = state.hideMail    ? 'Afficher' : 'Masquer';
-  $('#toggleActions').textContent = state.hideActions ? 'Afficher' : 'Masquer';
-
-  $('.th-tel')?.classList.toggle('hiddenCol', state.hideTel);
-  $('.th-mail')?.classList.toggle('hiddenCol', state.hideMail);
-  $('.th-actions')?.classList.toggle('hiddenCol', state.hideActions);
-
-  const tbody = $('#tbody'); tbody.textContent='';
-  $('#empty').style.display = state.players.length===0 ? 'block' : 'none';
-
-  // 3) Compteurs ronds : reset à chaque rendu
-  let cnt = { green:0, yellow:0, red:0 };
-
-  state.players.forEach(p=>{
-    const tr = document.createElement('tr');
-
-    // Nom & Prénom
-    const tdName = document.createElement('td'); tdName.className='col-name';
-    const nameBox = document.createElement('div'); nameBox.className='nameCell'; nameBox.title='Éditer';
-    const bc = badgeClass(p);
-    const badge = document.createElement('span'); badge.className='nameBadge ' + bc;
-    if (bc==='green') cnt.green++; else if(bc==='yellow') cnt.yellow++; else if(bc==='red') cnt.red++;
-    const nameText = document.createElement('span'); nameText.textContent = `${p.nom.toUpperCase()} ${p.prenom}`;
-    nameBox.append(badge, nameText); tdName.appendChild(nameBox); tr.appendChild(tdName);
-    nameBox.addEventListener('click', ()=> openRowSheet(p.id));
-
-    // Tel
-    const tdTel = document.createElement('td'); tdTel.className = (state.hideTel ? 'hiddenCol ' : '') + 'th-tel';
-    tdTel.textContent = p.tel || '—'; tr.appendChild(tdTel);
-
-    // Mail
-    const tdMail= document.createElement('td'); tdMail.className = (state.hideMail ? 'hiddenCol ' : '') + 'th-mail';
-    tdMail.textContent = p.mail || '—'; tr.appendChild(tdMail);
-
-    // Présent
-    const tdPres = document.createElement('td'); tdPres.className='presentCell col-pres';
-    const cb = document.createElement('input'); cb.type='checkbox'; cb.checked=!!p.present;
-    cb.addEventListener('change', ()=>{ p.present=cb.checked; save(); render(); });
-    tdPres.appendChild(cb); tr.appendChild(tdPres);
-
-    // Montant
-    const tdMoney = document.createElement('td'); tdMoney.className='col-money';
-    const m = document.createElement('input'); m.type='number'; m.inputMode='decimal'; m.min='0'; m.step='0.01'; m.style.maxWidth='86px';
-    m.value = (p.montant===null || typeof p.montant==='undefined') ? '' : String(p.montant);
-    m.addEventListener('input', ()=>{ const v=m.value.trim(); p.montant = v==='' ? null : Number(v); save(); render(); });
-    tdMoney.appendChild(m); tr.appendChild(tdMoney);
-
-    // Actions (optionnel)
-    const tdAct = document.createElement('td'); tdAct.className='rowActions col-actions ' + (state.hideActions ? 'hiddenCol' : '');
-    const edit = document.createElement('button'); edit.className='btn'; edit.textContent='✎'; edit.onclick=()=>openRowSheet(p.id);
-    const del  = document.createElement('button'); del.className='btn'; del.style.cssText='background:#fff0f0;color:#b10000;border-color:#ffd1d1'; del.textContent='Suppr';
-    del.onclick=()=>{ if(confirm(`Supprimer ${p.prenom} ${p.nom} ?`)){ state.players = state.players.filter(x=>x.id!==p.id); save(); render(); } };
-    tdAct.append(edit, del); tr.appendChild(tdAct);
-
-    tbody.appendChild(tr);
-  });
-
-  // Stats
-  const inscrits = state.players.length;
-  const presents = state.players.filter(p=>p.present).length;
-  const total = state.players.reduce((s,p)=> s + (p.present && Number(p.montant)>0 ? Number(p.montant) : 0), 0);
-  $('#statInscrits').textContent = String(inscrits);
-  $('#statPresents').textContent = String(presents);
-  $('#statTotal').textContent    = fmt(total)+' €';
-
-  // Affichage des 3 ronds
-  document.getElementById('countGreen').textContent  = cnt.green;
-  document.getElementById('countYellow').textContent = cnt.yellow;
-  document.getElementById('countRed').textContent    = cnt.red;
-}
-
-/* ===== Sheet ligne ===== */
-let currentRowId = null;
-function openRowSheet(id){
-  currentRowId = id;
-  const p = state.players.find(x=>x.id===id); if(!p) return;
-  $('#rowTitle').textContent = `${p.nom.toUpperCase()} ${p.prenom}`;
-  $('#rowNom').value    = p.nom   || '';
-  $('#rowPrenom').value = p.prenom|| '';
-  $('#rowTel').value    = p.tel   || '';
-  $('#rowMail').value   = p.mail  || '';
-  $('#sheetRow').classList.add('show'); $('#sheetRow').setAttribute('aria-hidden','false');
-}
-function closeRowSheet(){ $('#sheetRow').classList.remove('show'); $('#sheetRow').setAttribute('aria-hidden','true'); currentRowId=null; }
-$('#rowCancel').addEventListener('click', closeRowSheet);
-$('#rowSave').addEventListener('click', ()=>{
-  if(!currentRowId) return;
-  const p = state.players.find(x=>x.id===currentRowId); if(!p) return;
-  const nom = $('#rowNom').value.trim();
-  const prenom = $('#rowPrenom').value.trim();
-  const tel = $('#rowTel').value.trim();
-  const mail = $('#rowMail').value.trim();
-  if(!nom || !prenom){ alert('Nom et prénom requis.'); return; }
-  if(!phoneValid(tel)){ alert('Téléphone invalide : 04 + 8 chiffres.'); return; }
-  if(!emailValid(mail)){ alert('E-mail invalide.'); return; }
-  p.nom = nom; p.prenom = prenom; p.tel = tel; p.mail = mail;
-  sortPlayers(); save(); render(); toast('Modifié ✔️'); closeRowSheet();
-});
-$('#rowDelete').addEventListener('click', ()=>{
-  if(!currentRowId) return;
-  const p = state.players.find(x=>x.id===currentRowId); if(!p) return;
-  if(confirm(`Supprimer ${p.prenom} ${p.nom} ?`)){
-    state.players = state.players.filter(x=>x.id!==p.id);
-    save(); render(); closeRowSheet();
+(function migrate(){
+  if(localStorage.getItem(STORAGE_KEY)) return;
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(/^tdtl_v_\d+_\d+$/.test(k)){ localStorage.setItem(STORAGE_KEY, localStorage.getItem(k)); break; }
   }
-});
-
-/* ===== Ajout / export / options ===== */
-$('#addForm').addEventListener('submit', (e)=>{
-  e.preventDefault();
-  const prenom = $('#prenom').value.trim();
-  const nom    = $('#nom').value.trim();
-  const tel    = $('#tel').value.trim();
-  const mail   = $('#mail').value.trim();
-  if(!prenom || !nom){ alert('Nom et prénom requis.'); return; }
-  if(!phoneValid(tel)){ alert('Téléphone invalide : 04 + 8 chiffres.'); return; }
-  if(!emailValid(mail)){ alert('E-mail invalide.'); return; }
-  state.players.push({ id:crypto.randomUUID(), prenom, nom, tel, mail, present:false, montant:null });
-  sortPlayers(); save(); e.target.reset(); render(); toast('Ajouté ✔️');
-});
-
-$('#saveAll').addEventListener('click', ()=>{ save(); toast('Sauvegardé ✔️'); });
-
-$('#exportNamesAmounts').addEventListener('click', async ()=>{
-  if(state.players.length===0){ alert('Rien à exporter.'); return; }
-  const headers = ['Nom complet','Montant'];
-  const rows = state.players.map(p=>[
-    csvEscape(`${p.nom} ${p.prenom}`.trim()),
-    (p.montant===null || typeof p.montant==='undefined') ? '' : String(p.montant)
-  ]);
-  const csv = [headers.join(';')].concat(rows.map(r=>r.join(';'))).join('\n');
-  const filename = 'noms_montants.csv';
-  try{
-    if(navigator.canShare && navigator.canShare({ files:[new File([csv], filename, {type:'text/csv'})]})){
-      await navigator.share({ files:[new File([csv], filename, {type:'text/csv'})], title:'Export', text:'Noms + Montants' });
-    }else{
-      downloadCsv(csv, filename);
-    }
-  }catch{ downloadCsv(csv, filename); }
-});
-function csvEscape(s){ s=String(s); return /[;"\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; }
-function downloadCsv(content, filename){
-  const blob = new Blob([content], {type:"text/csv;charset=utf-8;"});
-  const a = document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=filename; document.body.appendChild(a); a.click(); a.remove();
-}
-
-/* ===== Options & Import ===== */
-const optSheet = $('#sheetOptions');
-$('#btnOptions').addEventListener('click', ()=>{ optSheet.classList.add('show'); optSheet.setAttribute('aria-hidden','false'); });
-$('#closeOptions').addEventListener('click', ()=>{ optSheet.classList.remove('show'); optSheet.setAttribute('aria-hidden','true'); });
-$('#btnImport').addEventListener('click', ()=>{ optSheet.classList.add('show'); optSheet.setAttribute('aria-hidden','false'); $('#csvFile').focus(); });
-
-$('#toggleTel').addEventListener('click', ()=>{ state.hideTel=!state.hideTel; save(); render(); });
-$('#toggleMail').addEventListener('click', ()=>{ state.hideMail=!state.hideMail; save(); render(); });
-$('#toggleActions').addEventListener('click', ()=>{ state.hideActions=!state.hideActions; save(); render(); });
-
-/* ===== Import CSV robuste ===== */
-(()=> {
-  const fileInput=$('#csvFile'), importBtn=$('#importCsvBtn'), modeSel=$('#importMode');
-  fileInput?.addEventListener('change', async ()=>{
-    if(!fileInput.files?.[0]) return;
-    await doImportCsv(fileInput.files[0], modeSel?.value || 'append');
-    optSheet.classList.remove('show'); optSheet.setAttribute('aria-hidden','true');
-    fileInput.value='';
-  });
-  importBtn?.addEventListener('click', async ()=>{
-    const f=fileInput?.files?.[0]; if(!f){ alert('Choisissez un fichier CSV.'); return; }
-    await doImportCsv(f, modeSel?.value || 'append');
-    optSheet.classList.remove('show'); optSheet.setAttribute('aria-hidden','true');
-    fileInput.value='';
-  });
 })();
 
-async function doImportCsv(file, mode='append'){
-  try{
-    const text = await fileToTextSmart(file);
-    const rows = parseCsvSmart(text);
-    if(rows.length===0){ alert('CSV vide.'); return; }
-    const mapped = mapCsvRows(rows);
+/* Helpers */
+const $=s=>document.querySelector(s);
+const fmt=n=>(Number(n)||0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1200); }
 
-    const valid = [];
-    for(const r of mapped){
-      const prenom = (r.prenom||'').trim();
-      const nom    = (r.nom||'').trim();
-      const tel    = (r.tel||'').trim();
-      const mail   = (r.mail||'').trim();
-      const present= !!r.present;
-      const montant= (r.montant==='' || r.montant===null || typeof r.montant==='undefined') ? null : Number(r.montant);
-      if(!prenom || !nom) continue;
-      if(!phoneValid(tel)) continue; // vide ou 04xxxxxxxx
-      if(!emailValid(mail)) continue;
-      valid.push({ id:crypto.randomUUID(), prenom, nom, tel, mail, present, montant });
-    }
-    if(valid.length===0){ alert('Aucune ligne valide.'); return; }
-    state.players = (mode==='replace') ? valid : valid.concat(state.players);
-    sortPlayers(); save(); render(); toast(`Importé ${valid.length} ✔️`);
-  }catch(err){ console.error(err); alert('Erreur import : '+(err?.message||err)); }
-}
-async function fileToTextSmart(file){
-  const buf = await file.arrayBuffer();
-  let text = new TextDecoder('utf-8', {fatal:false}).decode(buf);
-  const repl=(text.match(/\uFFFD/g)||[]).length;
-  if(repl>5){ try{ text=new TextDecoder('iso-8859-1',{fatal:false}).decode(buf); }catch{} }
-  if(text.charCodeAt(0)===0xFEFF) text=text.slice(1);
-  return text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
-}
-function parseCsvWithSep(text, sep){
-  const rows=[]; let row=[], field='', i=0, inQ=false;
-  const pushField=()=>{ row.push(field); field=''; };
-  const pushRow  =()=>{ rows.push(row); row=[]; };
-  while(i<text.length){
-    const c=text[i];
-    if(inQ){
-      if(c=='"'){ if(text[i+1]=='"'){ field+='"'; i++; } else { inQ=false; } }
-      else field+=c;
-    }else{
-      if(c=='"') inQ=true;
-      else if(c==sep) pushField();
-      else if(c=='\n'){ pushField(); pushRow(); }
-      else if(c!='\r') field+=c;
-    }
-    i++;
-  }
-  pushField(); if(row.length>1 || row[0]!=='') pushRow();
-  return rows.map(r=>r.map(x=>(x??'').trim())).filter(r=>r.some(x=>x!==''));
-}
-function detectDelimiter(text){
-  const seps=['; ',',','\t','|']; let best=null, score=-Infinity;
-  for(const s of seps){
-    const parsed=parseCsvWithSep(text,s);
-    const lens=parsed.map(r=>r.length).filter(n=>n>1);
-    if(!lens.length) continue;
-    const avg=lens.reduce((a,b)=>a+b,0)/lens.length;
-    const variance=lens.reduce((acc,n)=>acc+(n-avg)*(n-avg),0)/lens.length;
-    const sc=lens.length*avg-variance;
-    if(sc>score){score=sc; best=parsed;}
-  }
-  return best||parseCsvWithSep(text,';');
-}
-function parseCsvSmart(text){ return detectDelimiter(text); }
-function mapCsvRows(rows){
-  if(rows.length===0) return [];
-  const header = rows[0].map(h=>h.toLowerCase());
-  const looksHeader = header.some(h=>['nom','prénom','prenom','téléphone','telephone','tel','email','e-mail','mail','present','présent','presence','montant','paid','paiement','payment','amount','somme'].includes(h));
-  const data = looksHeader ? rows.slice(1) : rows;
-  const find = names => header.findIndex(h=>names.includes(h));
-  const idx = {
-    nom:     find(['nom','name','last','lastname','surname']),
-    prenom:  find(['prénom','prenom','first','firstname','given']),
-    tel:     find(['téléphone','telephone','tel','phone','mobile']),
-    mail:    find(['email','e-mail','mail']),
-    present: find(['présent','present','presence']),
-    montant: find(['montant','paid','paiement','payment','amount','somme'])
-  };
-  const get = (r,i,def)=> (i!=null && i>=0 ? r[i] : (r[def]??''));
-  const normPresent = v => ['1','true','oui','o','y','yes','present','présent','x'].includes(String(v||'').toLowerCase());
-  const normNum = v => { let s=String(v??'').trim(); if(!s) return null; s=s.replace(/\s/g,'').replace(',', '.'); const n=Number(s); return isNaN(n)?null:n; };
-  return data.map(r=>({
-    nom:get(r,idx.nom,0), prenom:get(r,idx.prenom,1),
-    tel:get(r,idx.tel,2), mail:get(r,idx.mail,3),
-    present:normPresent(get(r,idx.present,4)),
-    montant:normNum(get(r,idx.montant,5))
-  }));
+/* État */
+let state; try{ state=JSON.parse(localStorage.getItem(STORAGE_KEY))||{} }catch{ state={}; }
+if(!state.players) state={ players:[], locked:false };
+
+/* Couleurs */
+function badgeClass(p){
+  if(!p.present) return '';
+  if(p.montant==null || p.montant==='') return 'yellow';
+  const m=Number(p.montant);
+  if(isNaN(m)) return 'yellow';
+  if(m===0) return 'red';
+  return 'green';
 }
 
-/* ===== Init ===== */
-sortPlayers(); render();
-  </script>
+/* Rendu */
+function render(){
+  const tb=$('#tbody'); tb.textContent='';
+  $('#empty').style.display = state.players.length ? 'none' : 'block';
+  let cnt={green:0,yellow:0,red:0};
+
+  state.players.forEach(p=>{
+    const tr=document.createElement('tr');
+    const bc=badgeClass(p);
+    if(bc==='green') cnt.green++; else if(bc==='yellow') cnt.yellow++; else if(bc==='red') cnt.red++;
+
+    tr.innerHTML=`
+      <td>${(p.nom||'').toUpperCase()} ${(p.prenom||'')}</td>
+      <td>${p.tel||'—'}</td>
+      <td>${p.mail||'—'}</td>
+      <td style="text-align:center"><input type="checkbox"${p.present?' checked':''}${state.locked?' disabled':''}></td>
+      <td><input type="number" value="${p.montant??''}" style="width:80px"${state.locked?' disabled':''}></td>
+      <td><button class="btn"${state.locked?' disabled':''}>✎</button> <button class="btn danger"${state.locked?' disabled':''}>🗑</button></td>`;
+    const cb=tr.querySelector('input[type=checkbox]');
+    const money=tr.querySelector('input[type=number]');
+    const [edit,del]=tr.querySelectorAll('button');
+    cb.onchange=()=>{p.present=cb.checked;save();render();};
+    money.oninput=()=>{p.montant=money.value===''?null:Number(money.value);save();render();};
+    edit.onclick=()=>{if(state.locked)return;const n=prompt('Nom ?',p.nom||'');if(!n)return;const pr=prompt('Prénom ?',p.prenom||'');if(!pr)return;p.nom=n;p.prenom=pr;save();render();};
+    del.onclick=()=>{if(state.locked)return;if(confirm('Supprimer ?')){state.players=state.players.filter(x=>x!==p);save();render();}};
+    tb.appendChild(tr);
+  });
+
+  $('#statInscrits').textContent=state.players.length;
+  $('#statPresents').textContent=state.players.filter(p=>p.present).length;
+  $('#statTotal').textContent=fmt(state.players.reduce((s,p)=>s+(p.present&&Number(p.montant)>0?Number(p.montant):0),0))+' €';
+  $('#countGreen').textContent=cnt.green;
+  $('#countYellow').textContent=cnt.yellow;
+  $('#countRed').textContent=cnt.red;
+}
+
+/* Ajout */
+$('#addForm').onsubmit=e=>{
+  e.preventDefault();
+  if(state.locked){toast('🔒 Liste verrouillée');return;}
+  const prenom=$('#prenom').value.trim(),nom=$('#nom').value.trim();
+  if(!prenom||!nom){alert('Nom et prénom requis');return;}
+  state.players.push({prenom,nom,tel:$('#tel').value.trim(),mail:$('#mail').value.trim(),present:false,montant:null});
+  save();render();e.target.reset();toast('Ajouté ✔️');
+};
+
+/* Sauvegarde */
+$('#saveAll').onclick=()=>{save();toast('Sauvegardé ✔️');};
+
+/* Effacer données */
+$('#btnClearData').onclick=()=>{
+  if(state.locked){toast('🔒 Liste verrouillée');return;}
+  if(!confirm('Effacer toutes les cases Présent et montants ?'))return;
+  state.players.forEach(p=>{p.present=false;p.montant=null;});
+  save();render();toast('Données effacées ✔️');
+};
+
+/* Verrouillage */
+$('#btnLock').onclick=()=>{
+  state.locked=!state.locked;
+  save();
+  $('#btnLock').textContent=state.locked?'🔓':'🔒';
+  $('#btnLock').className=state.locked?'btn locked':'btn';
+  render();
+};
+$('#btnLock').textContent=state.locked?'🔓':'🔒';
+$('#btnLock').className=state.locked?'btn locked':'btn';
+
+/* Export */
+$('#exportNamesAmounts').onclick=()=>{
+  if(!state.players.length){alert('Rien à exporter');return;}
+  const headers=['Nom complet','Montant'];
+  const rows=state.players.map(p=>[
+    `${(p.nom||'').trim()} ${(p.prenom||'').trim()}`.trim(),
+    (p.montant==null||p.montant==='')?'':String(p.montant)
+  ]);
+  const csv=[headers.join(';')].concat(rows.map(r=>r.join(';'))).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='noms_montants.csv';
+  document.body.appendChild(a);a.click();a.remove();
+};
+
+/* Import / Options placeholders */
+$('#btnImport')?.addEventListener('click',()=>toast('Import en préparation'));
+$('#btnOptions')?.addEventListener('click',()=>toast('Options en préparation'));
+
+render();
+</script>
 </body>
 </html>
