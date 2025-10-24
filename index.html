@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
-<title>TDT v3.9</title>
+<title>TDT v4.0</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
 <meta name="theme-color" content="#0a84ff" />
 <style>
@@ -18,11 +18,9 @@
   --bad:#ff3b30;
   --head:#2b2f3a;
   --head-ink:#f2f2f7;
+  --blueLight:#b5e3ff;
 }
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
   margin:0;
   color:var(--ink);
@@ -51,7 +49,7 @@ h1{
   font-size:.85rem;
   color:var(--sub);
 }
-.spacer{flex:1;}
+.spacer{flex:1}
 .counters{
   display:flex;
   gap:8px;
@@ -65,16 +63,23 @@ h1{
   align-items:center;
   justify-content:center;
   font-weight:800;
-  font-size:.85rem;
+  font-size:.75rem;
   color:#111;
   border:2px solid transparent;
   box-shadow:0 1px 2px rgba(0,0,0,.12);
+  line-height:1;
 }
-.counter.green{background:#d9fadd;border-color:var(--ok);}
-.counter.yellow{background:#fff8d4;border-color:var(--warn);}
-.counter.red{background:#ffe0e0;border-color:var(--bad);}
+.counter.green{background:#d9fadd;border-color:var(--ok)}
+.counter.yellow{background:#fff8d4;border-color:var(--warn)}
+.counter.red{background:#ffe0e0;border-color:var(--bad)}
+/* nouveau % présents */
+.counter.presence{
+  background:var(--blueLight);
+  color:#004080;
+  border-color:#6dbafc;
+}
 
-/* PAGE LAYOUT */
+/* LAYOUT */
 .wrap{
   max-width:1100px;
   margin:0 auto;
@@ -87,7 +92,7 @@ h1{
   overflow:hidden;
 }
 
-/* TOP TOOLBAR */
+/* BARRE DU HAUT */
 .toolbar{
   display:flex;
   gap:6px;
@@ -109,13 +114,14 @@ h1{
   align-items:center;
   justify-content:center;
   line-height:1;
-  transition:background .2s, border .2s, color .2s;
+  transition:background .2s,border .2s,color .2s;
 }
 .btn.primary{
   background:linear-gradient(180deg,#0a84ff,#007aff);
   color:#fff;
   border:none;
 }
+/* bleu clair (translucide) */
 .btn.blueLight{
   background:rgba(0,122,255,0.15);
   color:#004080;
@@ -145,7 +151,7 @@ h1{
   color:var(--sub);
 }
 
-/* ADD FORM */
+/* FORM AJOUT */
 form.add{
   display:grid;
   grid-template-columns:repeat(4,1fr) auto;
@@ -196,14 +202,12 @@ tbody td{
   border-bottom:1px solid var(--border);
   font-size:.95rem;
 }
-.hiddenCol{
-  display:none;
-}
+.hiddenCol{display:none}
 
-/* ROW COLORS */
-tr.row-green {background:#e9fbe9!important;}
-tr.row-yellow{background:#fff9e6!important;}
-tr.row-red   {background:#ffecec!important;}
+/* COULEUR DES LIGNES SELON PRÉSENCE / MONTANT */
+tr.row-green {background:#e9fbe9!important}
+tr.row-yellow{background:#fff9e6!important}
+tr.row-red   {background:#ffecec!important}
 
 /* OPTIONS SHEET */
 .sheet{
@@ -222,12 +226,8 @@ tr.row-red   {background:#ffecec!important;}
   max-height:70svh;
   overflow:auto;
 }
-.sheet.show{
-  transform:translateY(0);
-}
-.sheet h3{
-  margin:0 0 10px;
-}
+.sheet.show{transform:translateY(0)}
+.sheet h3{margin:0 0 10px}
 .sheet .row{
   display:flex;
   align-items:center;
@@ -253,19 +253,22 @@ tr.row-red   {background:#ffecec!important;}
   border-radius:8px;
   opacity:0;
   transition:.25s;
+  font-size:.8rem;
+  line-height:1.2;
 }
-.toast.show{
-  opacity:1;
-}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
 <header>
   <h1>
-    <span>TDT <span class="version" id="version">v3.9</span></span>
+    <span>TDT <span class="version" id="version">v4.0</span></span>
     <span class="copyright">© Pierre Charlier 2025</span>
     <span class="spacer"></span>
     <div class="counters">
+      <!-- % présents -->
+      <div class="counter presence" id="countPresence">0%</div>
+      <!-- compteurs vert/jaune/rouge -->
       <div class="counter green"  id="countGreen">0</div>
       <div class="counter yellow" id="countYellow">0</div>
       <div class="counter red"    id="countRed">0</div>
@@ -287,22 +290,10 @@ tr.row-red   {background:#ffecec!important;}
     </div>
 
     <form class="add" id="addForm" novalidate>
-      <div>
-        <label>Prénom</label>
-        <input id="prenom" required />
-      </div>
-      <div>
-        <label>Nom</label>
-        <input id="nom" required />
-      </div>
-      <div>
-        <label>Tel</label>
-        <input id="tel" maxlength="20" />
-      </div>
-      <div>
-        <label>Mail</label>
-        <input id="mail" type="email" />
-      </div>
+      <div><label>Prénom</label><input id="prenom" required></div>
+      <div><label>Nom</label><input id="nom" required></div>
+      <div><label>Tel</label><input id="tel" maxlength="20"></div>
+      <div><label>Mail</label><input id="mail" type="email"></div>
       <button class="btn primary" type="submit">+</button>
     </form>
 
@@ -326,7 +317,7 @@ tr.row-red   {background:#ffecec!important;}
   </div>
 </div>
 
-<!-- Options modal -->
+<!-- Options -->
 <div id="sheetOptions" class="sheet" aria-hidden="true">
   <h3>Options</h3>
 
@@ -348,81 +339,88 @@ tr.row-red   {background:#ffecec!important;}
 <div id="toast" class="toast">✔️</div>
 
 <script>
-/* ---------- STATE ---------- */
-const STORAGE_KEY = 'tdtl_state';
-const $ = s => document.querySelector(s);
+/* ====== STATE ====== */
+const STORAGE_KEY='tdtl_state';
+const $=s=>document.querySelector(s);
 
 let state;
-try {
-  state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-} catch {
-  state = {};
+try{
+  state=JSON.parse(localStorage.getItem(STORAGE_KEY))||{};
+}catch{
+  state={};
 }
-if (!state.players) {
-  state = {
-    players: [],
-    locked: false,
-    showCols: false,
-    sortAsc: true
+if(!state.players){
+  state={
+    players:[],
+    locked:false,
+    showCols:false,
+    sortAsc:true
   };
 }
 
-/* ---------- HELPERS ---------- */
+/* ====== HELPERS ====== */
 function save(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
 }
-function toast(msg){
-  const t = $('#toast');
-  t.textContent = msg;
+function toast(m){
+  const t=$('#toast');
+  t.textContent=m;
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 1200);
+  setTimeout(()=>t.classList.remove('show'),1200);
 }
 function rowClass(p){
-  // applique la couleur de ligne selon présence + montant
-  if (!p.present) return '';
-  if (p.montant == null || p.montant === '') return 'row-yellow';
-  const m = Number(p.montant);
-  if (isNaN(m)) return 'row-yellow';
-  if (m === 0) return 'row-red';
+  // applique la couleur de fond en fonction de présence+montant
+  if(!p.present) return '';
+  if(p.montant==null || p.montant==='') return 'row-yellow';
+  const m=Number(p.montant);
+  if(isNaN(m)) return 'row-yellow';
+  if(m===0) return 'row-red';
   return 'row-green';
 }
+function updatePresenceRate(){
+  const total=state.players.length;
+  const presents=state.players.filter(p=>p.present).length;
+  const pct=total ? Math.round((presents/total)*100) : 0;
+  $('#countPresence').textContent=pct+'%';
+}
 
-/* ---------- RENDER TABLE ---------- */
+/* ====== RENDER TABLE ====== */
 function render(){
-  const tb = $('#tbody');
-  tb.textContent = '';
+  const tb=$('#tbody');
+  tb.textContent='';
 
-  // message vide
+  // message "Aucun joueur"
   $('#empty').style.display = state.players.length ? 'none' : 'block';
 
-  let cnt = { green:0, yellow:0, red:0 };
-  let total = 0;
+  let cnt={green:0,yellow:0,red:0};
+  let total=0;
 
-  state.players.forEach(p => {
-    const tr = document.createElement('tr');
+  state.players.forEach(p=>{
+    const tr=document.createElement('tr');
 
-    // ligne colorée
-    const rc = rowClass(p);
-    if (rc) tr.classList.add(rc);
+    // ligne colorée selon rules
+    const rc=rowClass(p);
+    if(rc) tr.classList.add(rc);
 
-    // compteurs
-    if (rc === 'row-green') cnt.green++;
-    else if (rc === 'row-yellow') cnt.yellow++;
-    else if (rc === 'row-red') cnt.red++;
+    // compteurs ronds
+    if(rc==='row-green') cnt.green++;
+    else if(rc==='row-yellow') cnt.yellow++;
+    else if(rc==='row-red') cnt.red++;
 
-    if (p.present && Number(p.montant) > 0) {
-      total += Number(p.montant);
+    // total €
+    if(p.present && Number(p.montant)>0){
+      total+=Number(p.montant);
     }
 
-    tr.innerHTML = `
-      <td>${(p.nom || '').toUpperCase()} ${(p.prenom || '')}</td>
-      <td class="td-tel">${p.tel || '—'}</td>
-      <td class="td-mail">${p.mail || '—'}</td>
+    tr.innerHTML=`
+      <td>${(p.nom||'').toUpperCase()} ${(p.prenom||'')}</td>
+      <td class="td-tel">${p.tel||'—'}</td>
+      <td class="td-mail">${p.mail||'—'}</td>
       <td style="text-align:center">
-        <input type="checkbox" ${p.present ? 'checked' : ''} ${state.locked ? 'disabled' : ''}>
+        <input type="checkbox" ${p.present?'checked':''} ${state.locked?'disabled':''}>
       </td>
       <td>
-        <input type="number" value="${p.montant ?? ''}" style="width:86px" ${state.locked ? 'disabled' : ''}>
+        <input type="number" value="${p.montant??''}" style="width:86px" ${state.locked?'disabled':''}>
       </td>
       <td>
         <button class="btn" title="Éditer">✎</button>
@@ -430,55 +428,50 @@ function render(){
       </td>
     `;
 
-    // masque Tel / Mail si showCols = false
-    if (!state.showCols) {
+    // masquer Tel / Mail si demandé
+    if(!state.showCols){
       tr.querySelector('.td-tel').classList.add('hiddenCol');
       tr.querySelector('.td-mail').classList.add('hiddenCol');
     }
 
-    // hook des contrôles ligne
-    const cb    = tr.querySelector('input[type=checkbox]');
-    const money = tr.querySelector('input[type=number]');
-    const [editBtn, delBtn] = tr.querySelectorAll('button');
+    // brancher les contrôles ligne
+    const cb=tr.querySelector('input[type=checkbox]');
+    const money=tr.querySelector('input[type=number]');
+    const [editBtn,delBtn]=tr.querySelectorAll('button');
 
-    cb.onchange = () => {
-      p.present = cb.checked;
+    cb.onchange=()=>{
+      p.present=cb.checked;
       save();
       render();
     };
 
-    money.oninput = () => {
-      const rawVal = money.value;
-      p.montant = rawVal === '' ? null : Number(rawVal);
+    money.oninput=()=>{
+      const rawVal=money.value;
+      p.montant=(rawVal==='')?null:Number(rawVal);
       save();
       render();
     };
 
-    editBtn.onclick = () => {
-      if (state.locked) return;
-      const n    = prompt('Nom ?',    p.nom    || '');
-      if (n === null) return;
-      const pr   = prompt('Prénom ?', p.prenom || '');
-      if (pr === null) return;
-      const tel  = prompt('Téléphone ?', p.tel || '');
-      if (tel === null) return;
-      const mail = prompt('E-mail ?',    p.mail || '');
-      if (mail === null) return;
+    editBtn.onclick=()=>{
+      if(state.locked)return;
+      const n   =prompt('Nom ?',p.nom||'');   if(n===null)return;
+      const pr  =prompt('Prénom ?',p.prenom||''); if(pr===null)return;
+      const tel =prompt('Téléphone ?',p.tel||''); if(tel===null)return;
+      const mail=prompt('E-mail ?',p.mail||'');   if(mail===null)return;
 
-      p.nom    = n.trim();
-      p.prenom = pr.trim();
-      p.tel    = tel.trim();
-      p.mail   = mail.trim();
-
+      p.nom=n.trim();
+      p.prenom=pr.trim();
+      p.tel=tel.trim();
+      p.mail=mail.trim();
       save();
       render();
       toast('Modifié');
     };
 
-    delBtn.onclick = () => {
-      if (state.locked) return;
-      if (confirm('Supprimer cette ligne ?')) {
-        state.players = state.players.filter(x => x !== p);
+    delBtn.onclick=()=>{
+      if(state.locked)return;
+      if(confirm('Supprimer cette ligne ?')){
+        state.players=state.players.filter(x=>x!==p);
         save();
         render();
         toast('Supprimé');
@@ -488,9 +481,9 @@ function render(){
     tb.appendChild(tr);
   });
 
-  // stats
+  // stats haut de page
   $('#statInscrits').textContent  = state.players.length;
-  $('#statPresents').textContent  = state.players.filter(p => p.present).length;
+  $('#statPresents').textContent  = state.players.filter(p=>p.present).length;
   $('#statTotal').textContent     = total.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
 
   // compteurs pastilles
@@ -498,23 +491,26 @@ function render(){
   $('#countYellow').textContent = cnt.yellow;
   $('#countRed').textContent    = cnt.red;
 
-  // th Tel / Mail masqués ?
+  // % présents
+  updatePresenceRate();
+
+  // masque les <th> Tel / Mail si besoin
   document.querySelectorAll('thead .th-tel, thead .th-mail').forEach(th=>{
     th.classList.toggle('hiddenCol', !state.showCols);
   });
 }
 
-/* ---------- AJOUT JOUEUR ---------- */
-document.getElementById('addForm').onsubmit = e => {
+/* ====== AJOUT JOUEUR ====== */
+$('#addForm').onsubmit=e=>{
   e.preventDefault();
-  if (state.locked) { toast('🔒'); return; }
+  if(state.locked){toast('🔒');return;}
 
-  const prenom = $('#prenom').value.trim();
-  const nom    = $('#nom').value.trim();
-  const tel    = $('#tel').value.trim();
-  const mail   = $('#mail').value.trim();
+  const prenom=$('#prenom').value.trim();
+  const nom=$('#nom').value.trim();
+  const tel=$('#tel').value.trim();
+  const mail=$('#mail').value.trim();
 
-  if (!prenom || !nom) {
+  if(!prenom||!nom){
     alert('Nom et prénom requis');
     return;
   }
@@ -534,97 +530,97 @@ document.getElementById('addForm').onsubmit = e => {
   toast('Ajouté');
 };
 
-/* ---------- VERROUILLAGE ---------- */
+/* ====== VERROUILLAGE (🔒 rouge / 🔓 vert) ====== */
 function updateLockButton(){
-  const b = $('#btnLock');
-  if (state.locked) {
-    b.textContent = '🔒';
-    b.className = 'btn locked';
-  } else {
-    b.textContent = '🔓';
-    b.className = 'btn unlocked';
+  const b=$('#btnLock');
+  if(state.locked){
+    b.textContent='🔒';
+    b.className='btn locked';
+  }else{
+    b.textContent='🔓';
+    b.className='btn unlocked';
   }
 }
-$('#btnLock').onclick = () => {
-  state.locked = !state.locked;
+$('#btnLock').onclick=()=>{
+  state.locked=!state.locked;
   save();
   render();
   updateLockButton();
 };
 updateLockButton();
 
-/* ---------- EFFACER PRÉSENT + MONTANTS ---------- */
-$('#btnClearData').onclick = () => {
-  if (state.locked) { toast('🔒'); return; }
-  if (!confirm('Effacer Présent + Montants pour tout le monde ?')) return;
-
-  state.players.forEach(p => {
-    p.present = false;
-    p.montant = null;
+/* ====== EFFACER PRÉSENT + MONTANTS ====== */
+$('#btnClearData').onclick=()=>{
+  if(state.locked){toast('🔒');return;}
+  if(!confirm('Effacer Présent + Montants ?'))return;
+  state.players.forEach(p=>{
+    p.present=false;
+    p.montant=null;
   });
-
   save();
   render();
   toast('Données effacées');
 };
 
-/* ---------- OPTIONS SHEET ---------- */
-const sheet = $('#sheetOptions');
-$('#btnOptions').onclick = () => {
+/* ====== OPTIONS SHEET ====== */
+const sheet=$('#sheetOptions');
+$('#btnOptions').onclick=()=>{
   sheet.classList.add('show');
   sheet.setAttribute('aria-hidden','false');
 };
-$('#btnCloseOptions').onclick = () => {
+$('#btnCloseOptions').onclick=()=>{
   sheet.classList.remove('show');
   sheet.setAttribute('aria-hidden','true');
 };
 
-/* toggle colonnes Tel/Mail */
-$('#btnToggleCols').onclick = () => {
-  state.showCols = !state.showCols;
+/* masquer / afficher Tel & Mail */
+$('#btnToggleCols').onclick=()=>{
+  state.showCols=!state.showCols;
   save();
   render();
-  toast(state.showCols ? 'Colonnes affichées' : 'Colonnes masquées');
+  toast(state.showCols?'Colonnes affichées':'Colonnes masquées');
 };
 
-/* supprimer toute la liste */
-$('#btnDeleteAll').onclick = () => {
-  if (state.locked) { toast('🔒'); return; }
-  if (!state.players.length) { toast('Liste vide'); return; }
-  if (confirm('Supprimer TOUTE la liste ?')) {
-    state.players = [];
+/* supprimer TOUTE la liste */
+$('#btnDeleteAll').onclick=()=>{
+  if(state.locked){toast('🔒');return;}
+  if(!state.players.length){toast('Liste vide');return;}
+  if(confirm('Supprimer TOUTE la liste ?')){
+    state.players=[];
     save();
     render();
     toast('Liste supprimée');
   }
 };
 
-/* ---------- IMPORT CSV ---------- */
-/*
-CSV attendu :
-prenom;nom;tel;mail;present;montant
-- séparateur ; ou ,
-- present = 1 / true / oui / o / x
-- montant = nombre (virgule acceptée)
+/* ====== IMPORT CSV ======
+   Format attendu :
+   prenom;nom;tel;mail;present;montant
+   - séparateur ; ou ,
+   - present: 1 / true / oui / o / x
+   - montant: nombre (virgule ok)
 */
-$('#btnImport').onclick = () => {
-  if (state.locked) { toast('🔒'); return; }
+$('#btnImport').onclick=()=>{
+  if(state.locked){toast('🔒');return;}
 
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.csv,text/csv';
+  const input=document.createElement('input');
+  input.type='file';
+  input.accept='.csv,text/csv';
 
-  input.onchange = async e => {
-    const f = e.target.files[0];
-    if (!f) return;
+  input.onchange=async e=>{
+    const f=e.target.files[0];
+    if(!f)return;
 
-    const txt = await f.text();
+    // lire texte brut du CSV
+    const txt=await f.text();
 
-    const lines = txt
+    // lignes non vides
+    const lines=txt
       .split(/\r?\n/)
       .map(l=>l.trim())
       .filter(l=>l!=='');
-    if (lines.length < 2) {
+
+    if(lines.length<2){
       alert('Fichier vide');
       return;
     }
@@ -633,9 +629,9 @@ $('#btnImport').onclick = () => {
     const sep = lines[0].includes(';') ? ';' : ',';
 
     // headers
-    const headers = lines[0].split(sep).map(h=>h.trim().toLowerCase());
+    const headers=lines[0].split(sep).map(h=>h.trim().toLowerCase());
 
-    const idx = {
+    const idx={
       prenom:  headers.indexOf('prenom'),
       nom:     headers.indexOf('nom'),
       tel:     headers.indexOf('tel'),
@@ -644,42 +640,42 @@ $('#btnImport').onclick = () => {
       montant: headers.indexOf('montant')
     };
 
-    // on exige au moins prenom & nom
-    if (idx.prenom < 0 || idx.nom < 0) {
+    // on veut au moins prenom et nom
+    if(idx.prenom<0 || idx.nom<0){
       alert('Entêtes requis : prenom;nom;tel;mail;present;montant');
       return;
     }
 
-    const imported = [];
+    const imported=[];
 
-    for (let i=1;i<lines.length;i++){
-      const cols = lines[i].split(sep);
+    for(let i=1;i<lines.length;i++){
+      const cols=lines[i].split(sep);
 
-      const prenom = (cols[idx.prenom]||'').trim();
-      const nom    = (cols[idx.nom]   ||'').trim();
-      const tel    = idx.tel    >=0 ? (cols[idx.tel]   ||'').trim() : '';
-      const mail   = idx.mail   >=0 ? (cols[idx.mail]  ||'').trim() : '';
+      const prenom=(cols[idx.prenom]||'').trim();
+      const nom   =(cols[idx.nom]   ||'').trim();
+      const tel   = idx.tel>=0  ? (cols[idx.tel]  ||'').trim() : '';
+      const mail  = idx.mail>=0 ? (cols[idx.mail] ||'').trim() : '';
 
-      // ignorer ligne vide
-      if (!prenom && !nom) continue;
+      // ignore ligne totalement vide
+      if(!prenom && !nom) continue;
 
-      // Présent
-      let present = false;
-      if (idx.present >= 0) {
-        const rawPres = (cols[idx.present] || '').trim();
-        if (/^(1|true|oui|o|x)$/i.test(rawPres)) {
-          present = true;
+      // présent
+      let present=false;
+      if(idx.present>=0){
+        const rawPres=(cols[idx.present]||'').trim();
+        if(/^(1|true|oui|o|x)$/i.test(rawPres)){
+          present=true;
         }
       }
 
-      // Montant
-      let montant = null;
-      if (idx.montant >= 0) {
-        const rawM = (cols[idx.montant] || '').trim();
-        if (rawM !== '') {
-          const n = Number(rawM.replace(',','.'));
-          if (!isNaN(n)) {
-            montant = n;
+      // montant
+      let montant=null;
+      if(idx.montant>=0){
+        const rawM=(cols[idx.montant]||'').trim();
+        if(rawM!==''){
+          const n=Number(rawM.replace(',','.'));
+          if(!isNaN(n)){
+            montant=n;
           }
         }
       }
@@ -694,14 +690,14 @@ $('#btnImport').onclick = () => {
       });
     }
 
-    if (!imported.length) {
+    if(!imported.length){
       alert('Aucune ligne valide');
       return;
     }
 
-    if (!confirm(`Importer ${imported.length} lignes ?`)) return;
+    if(!confirm(`Importer ${imported.length} lignes ?`))return;
 
-    state.players = imported;
+    state.players=imported;
     save();
     render();
     toast('Importé');
@@ -710,20 +706,20 @@ $('#btnImport').onclick = () => {
   input.click();
 };
 
-/* ---------- TRI NOM & PRÉNOM ---------- */
-$('#thName').onclick = () => {
-  state.sortAsc = !state.sortAsc;
+/* ====== TRI PAR NOM & PRÉNOM ====== */
+$('#thName').onclick=()=>{
+  state.sortAsc=!state.sortAsc;
   state.players.sort((a,b)=>{
-    const an = ( (a.nom||'') + ' ' + (a.prenom||'') ).toLowerCase();
-    const bn = ( (b.nom||'') + ' ' + (b.prenom||'') ).toLowerCase();
+    const an=((a.nom||'')+' '+(a.prenom||'')).toLowerCase();
+    const bn=((b.nom||'')+' '+(b.prenom||'')).toLowerCase();
     return state.sortAsc ? an.localeCompare(bn) : bn.localeCompare(an);
   });
   save();
   render();
-  toast(state.sortAsc ? 'Tri A→Z' : 'Tri Z→A');
+  toast(state.sortAsc?'Tri A→Z':'Tri Z→A');
 };
 
-/* ---------- INIT ---------- */
+/* ====== INIT ====== */
 render();
 </script>
 </body>
