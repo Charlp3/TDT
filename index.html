@@ -1,292 +1,729 @@
 <!doctype html>
-<html lang="fr" data-theme="auto">
+<html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <title>TDT v3.2</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
-  <meta name="theme-color" content="#0a84ff" />
-  <style>
-    :root{
-      --upper:#c7c8ce; --page:#d1d2d8; --panel:#ffffff;
-      --ink:#111; --sub:#444; --border:#b1b2b8; --accent:#007aff;
-      --ok:#28cd41; --warn:#ffcc00; --bad:#ff3b30;
-      --head-dark:#2a2a2c;
-      --zebra1:#e0e1e6; --zebra2:#d4d5db;
-      --fab-h:60px;
-    }
-    @media (prefers-color-scheme: dark){
-      :root{
-        --upper:#1b1b1e; --page:#111113; --panel:#1a1a1d;
-        --ink:#e6e6eb; --sub:#a1a1a7; --border:#2c2c2e; --accent:#0a84ff;
-        --ok:#30d158; --warn:#ffd60a; --bad:#ff453a;
-        --head-dark:#1f1f22;
-        --zebra1:#2c2c2e; --zebra2:#3a3a3c;
-      }
-    }
-
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    body{
-      margin:0;color:var(--ink);
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,Helvetica,Arial,sans-serif;
-      background:linear-gradient(180deg,var(--upper) 0%, var(--page) 420px, var(--page) 100%);
-    }
-
-    /* ===== HEADER ===== */
-    header{
-      position:sticky;top:0;z-index:40;background:var(--upper);
-      border-bottom:1px solid var(--border);
-      padding:calc(4px + env(safe-area-inset-top)) 12px 4px
-    }
-    h1{
-      margin:0;font-size:1rem;font-weight:700;
-      display:flex;align-items:center;gap:8px;
-    }
-    .version{font-size:.8rem;color:var(--sub)}
-    .copyright{margin-left:6px;font-size:.8rem;color:var(--sub)}
-    .spacer{flex:1}
-    .counters{display:flex;gap:8px;align-items:center}
-    .counter{
-      width:28px;height:28px;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      font-weight:700;font-size:.8rem;color:#111;
-      border:2px solid transparent;box-shadow:0 1px 2px rgba(0,0,0,.12);
-    }
-    .counter.green  {background:#d9fadd;border-color:var(--ok);}
-    .counter.yellow {background:#fff8d4;border-color:var(--warn);}
-    .counter.red    {background:#ffe0e0;border-color:var(--bad);}
-
-    .wrap{max-width:1100px;margin:0 auto;padding:12px 12px calc(var(--fab-h) + 16px)}
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-
-    .toolbar{
-      display:flex;gap:6px;padding:8px;align-items:center;flex-wrap:wrap;
-      background:var(--upper);border-bottom:1px solid var(--border)
-    }
-
-    .btn{
-      height:28px;
-      width:34px;
-      padding:0;
-      border-radius:8px;
-      border:1px solid var(--border);
-      background:#fff;
-      font-size:1rem;
-      cursor:pointer;
-      line-height:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .btn.primary{background:linear-gradient(180deg,#0a84ff,#007aff);color:#fff;border:none}
-    .btn.danger{background:#ff3b30;color:#fff;border:none}
-    .btn.locked{background:#d1d1d6;color:#666;border:none}
-
-    .stat{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--border);padding:4px 10px;border-radius:999px;font-weight:600}
-
-    form.add{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:8px;padding:8px;background:var(--upper);border-bottom:1px solid var(--border)}
-    label{font-size:.78rem;color:var(--sub);margin:0 0 4px}
-    input{width:100%;height:38px;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:#fff;font-size:1rem}
-
-    .tblWrap{max-height:60svh;overflow:auto}
-    table{width:100%;border-collapse:separate;border-spacing:0;min-width:520px}
-    thead th{
-      position:sticky;top:0;z-index:5;background:var(--head-dark);color:#f2f2f7;
-      padding:6px 8px;font-size:.75rem;text-align:left
-    }
-    tbody td{padding:6px 8px;border-bottom:1px solid var(--border);font-size:.9rem}
-    tbody tr:nth-child(odd){background:var(--zebra1)}
-    tbody tr:nth-child(even){background:var(--zebra2)}
-
-    .fabBar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(245,245,247,.96);
-      backdrop-filter:blur(8px);border-top:1px solid var(--border);
-      padding:8px;display:flex;gap:8px}
-    .fabBar .btn{flex:1}
-
-    .toast{position:fixed;bottom:calc(var(--fab-h) + 12px);right:16px;background:#111;color:#fff;
-      padding:8px 12px;border-radius:8px;opacity:0;transition:.25s}
-    .toast.show{opacity:1}
-  </style>
-</head>
-<body>
-  <header>
-    <h1>
-      <span>TDT <span class="version" id="version">v3.2</span></span>
-      <span class="copyright">© Pierre Charlier 2025</span>
-      <span class="spacer"></span>
-      <div class="counters">
-        <div class="counter green"  id="countGreen">0</div>
-        <div class="counter yellow" id="countYellow">0</div>
-        <div class="counter red"    id="countRed">0</div>
-      </div>
-    </h1>
-  </header>
-
-  <div class="wrap">
-    <div class="card">
-      <div class="toolbar">
-        <button class="btn" id="btnImport" title="Importer">📥</button>
-        <button class="btn" id="btnOptions" title="Options">⚙️</button>
-        <button class="btn" id="btnLock" title="Verrouiller">🔒</button>
-        <button class="btn danger" id="btnClearData" title="Effacer données">🧹</button>
-        <span class="stat">Inscrits: <strong id="statInscrits">0</strong></span>
-        <span class="stat">Présents: <strong id="statPresents">0</strong></span>
-        <span class="stat">Total: <strong id="statTotal">0,00 €</strong></span>
-      </div>
-
-      <form class="add" id="addForm" novalidate>
-        <div><label>Prénom</label><input id="prenom" required placeholder="Jean"></div>
-        <div><label>Nom</label><input id="nom" required placeholder="Dupont"></div>
-        <div><label>Tel</label><input id="tel" maxlength="10" inputmode="numeric" placeholder="0412345678"></div>
-        <div><label>Mail</label><input id="mail" type="email" placeholder="ex: joueur@mail.fr"></div>
-        <button class="btn primary" type="submit">+</button>
-      </form>
-
-      <div class="tblWrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Nom & Prénom</th>
-              <th>Téléphone</th>
-              <th>E-mail</th>
-              <th>Présent</th>
-              <th>Montant (€)</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-
-      <div id="empty" style="display:none;padding:12px;text-align:center;color:var(--sub)">Aucun joueur.</div>
-    </div>
-  </div>
-
-  <div class="fabBar">
-    <button class="btn" id="exportNamesAmounts" title="Exporter">📤</button>
-    <button class="btn primary" id="saveAll" title="Sauver">💾</button>
-  </div>
-
-  <div id="toast" class="toast">✔️</div>
-  <script>
-const VERSION='3.2';
-document.getElementById('version').textContent='v'+VERSION;
-
-/* Clé stable + migration */
-const STORAGE_KEY='tdtl_state';
-(function migrate(){
-  if(localStorage.getItem(STORAGE_KEY)) return;
-  for(let i=0;i<localStorage.length;i++){
-    const k=localStorage.key(i);
-    if(/^tdtl_v_\d+_\d+$/.test(k)){ localStorage.setItem(STORAGE_KEY, localStorage.getItem(k)); break; }
-  }
-})();
-
-/* Helpers */
-const $=s=>document.querySelector(s);
-const fmt=n=>(Number(n)||0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});
-function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1200); }
-
-/* État */
-let state; try{ state=JSON.parse(localStorage.getItem(STORAGE_KEY))||{} }catch{ state={}; }
-if(!state.players) state={ players:[], locked:false };
-
-/* Couleurs */
-function badgeClass(p){
-  if(!p.present) return '';
-  if(p.montant==null || p.montant==='') return 'yellow';
-  const m=Number(p.montant);
-  if(isNaN(m)) return 'yellow';
-  if(m===0) return 'red';
-  return 'green';
+<meta charset="utf-8" />
+<title>TDT v3.9</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="theme-color" content="#0a84ff" />
+<style>
+:root{
+  --upper:#e9eaee;
+  --page:#f4f5f7;
+  --panel:#fff;
+  --ink:#111;
+  --sub:#555;
+  --border:#cfd2d7;
+  --ok:#28cd41;
+  --warn:#ffcc00;
+  --bad:#ff3b30;
+  --head:#2b2f3a;
+  --head-ink:#f2f2f7;
+}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+body{
+  margin:0;
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,Helvetica,Arial,sans-serif;
+  background:linear-gradient(180deg,var(--upper)0,var(--page)440px,var(--page)100%);
 }
 
-/* Rendu */
+/* HEADER */
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:var(--upper);
+  border-bottom:1px solid var(--border);
+  padding:calc(4px + env(safe-area-inset-top)) 12px 6px;
+}
+h1{
+  margin:0;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:1rem;
+  font-weight:800;
+}
+.version,.copyright{
+  font-size:.85rem;
+  color:var(--sub);
+}
+.spacer{flex:1;}
+.counters{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.counter{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  font-size:.85rem;
+  color:#111;
+  border:2px solid transparent;
+  box-shadow:0 1px 2px rgba(0,0,0,.12);
+}
+.counter.green{background:#d9fadd;border-color:var(--ok);}
+.counter.yellow{background:#fff8d4;border-color:var(--warn);}
+.counter.red{background:#ffe0e0;border-color:var(--bad);}
+
+/* PAGE LAYOUT */
+.wrap{
+  max-width:1100px;
+  margin:0 auto;
+  padding:12px;
+}
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+/* TOP TOOLBAR */
+.toolbar{
+  display:flex;
+  gap:6px;
+  padding:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  background:var(--upper);
+  border-bottom:1px solid var(--border);
+}
+.btn{
+  height:28px;
+  min-width:34px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:#fff;
+  font-size:1rem;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+  transition:background .2s, border .2s, color .2s;
+}
+.btn.primary{
+  background:linear-gradient(180deg,#0a84ff,#007aff);
+  color:#fff;
+  border:none;
+}
+.btn.blueLight{
+  background:rgba(0,122,255,0.15);
+  color:#004080;
+  border:1px solid rgba(0,122,255,0.2);
+}
+/* cadenas états */
+.btn.locked{
+  background:#ffd6d6;
+  color:#a00;
+  border:1px solid #f99;
+}
+.btn.unlocked{
+  background:#d6ffe0;
+  color:#060;
+  border:1px solid #8f8;
+}
+
+.stat{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#fff;
+  border:1px solid var(--border);
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:700;
+  color:var(--sub);
+}
+
+/* ADD FORM */
+form.add{
+  display:grid;
+  grid-template-columns:repeat(4,1fr) auto;
+  gap:8px;
+  padding:8px;
+  background:var(--upper);
+  border-bottom:1px solid var(--border);
+}
+label{
+  font-size:.78rem;
+  color:var(--sub);
+}
+input{
+  width:100%;
+  height:38px;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:#fff;
+  font-size:1rem;
+}
+
+/* TABLE */
+.tblWrap{
+  max-height:60svh;
+  overflow:auto;
+}
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  min-width:520px;
+}
+thead th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:var(--head);
+  color:var(--head-ink);
+  padding:6px 8px;
+  font-size:.75rem;
+  text-align:left;
+  cursor:pointer;
+  user-select:none;
+}
+tbody td{
+  padding:6px 8px;
+  border-bottom:1px solid var(--border);
+  font-size:.95rem;
+}
+.hiddenCol{
+  display:none;
+}
+
+/* ROW COLORS */
+tr.row-green {background:#e9fbe9!important;}
+tr.row-yellow{background:#fff9e6!important;}
+tr.row-red   {background:#ffecec!important;}
+
+/* OPTIONS SHEET */
+.sheet{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:30;
+  background:#fff;
+  color:#111;
+  border-radius:12px 12px 0 0;
+  box-shadow:0 -6px 20px rgba(0,0,0,.25);
+  transform:translateY(100%);
+  transition:.25s;
+  padding:12px;
+  max-height:70svh;
+  overflow:auto;
+}
+.sheet.show{
+  transform:translateY(0);
+}
+.sheet h3{
+  margin:0 0 10px;
+}
+.sheet .row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+.sheet .actions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  padding-top:10px;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:16px;
+  right:16px;
+  background:#111;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:8px;
+  opacity:0;
+  transition:.25s;
+}
+.toast.show{
+  opacity:1;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>
+    <span>TDT <span class="version" id="version">v3.9</span></span>
+    <span class="copyright">© Pierre Charlier 2025</span>
+    <span class="spacer"></span>
+    <div class="counters">
+      <div class="counter green"  id="countGreen">0</div>
+      <div class="counter yellow" id="countYellow">0</div>
+      <div class="counter red"    id="countRed">0</div>
+    </div>
+  </h1>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <div class="toolbar">
+      <button class="btn"           id="btnImport"    title="Importer">📥</button>
+      <button class="btn"           id="btnOptions"   title="Options">⚙️</button>
+      <button class="btn unlocked"  id="btnLock"      title="Verrouiller/Déverrouiller">🔓</button>
+      <button class="btn blueLight" id="btnClearData" title="Effacer Présent+Montants">🧹</button>
+
+      <span class="stat">Inscrits: <strong id="statInscrits">0</strong></span>
+      <span class="stat">Présents: <strong id="statPresents">0</strong></span>
+      <span class="stat">Total: <strong id="statTotal">0,00 €</strong></span>
+    </div>
+
+    <form class="add" id="addForm" novalidate>
+      <div>
+        <label>Prénom</label>
+        <input id="prenom" required />
+      </div>
+      <div>
+        <label>Nom</label>
+        <input id="nom" required />
+      </div>
+      <div>
+        <label>Tel</label>
+        <input id="tel" maxlength="20" />
+      </div>
+      <div>
+        <label>Mail</label>
+        <input id="mail" type="email" />
+      </div>
+      <button class="btn primary" type="submit">+</button>
+    </form>
+
+    <div class="tblWrap">
+      <table>
+        <thead>
+          <tr>
+            <th id="thName">Nom & Prénom ⇅</th>
+            <th class="th-tel">Téléphone</th>
+            <th class="th-mail">E-mail</th>
+            <th>Présent</th>
+            <th>Montant (€)</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div id="empty" style="display:none;padding:12px;text-align:center;color:var(--sub)">Aucun joueur.</div>
+  </div>
+</div>
+
+<!-- Options modal -->
+<div id="sheetOptions" class="sheet" aria-hidden="true">
+  <h3>Options</h3>
+
+  <div class="row">
+    <span>Afficher Tel & Mail</span>
+    <button class="btn" id="btnToggleCols">👁️</button>
+  </div>
+
+  <div class="row">
+    <span>Supprimer toute la liste</span>
+    <button class="btn blueLight" id="btnDeleteAll">🗑</button>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="btnCloseOptions">✕</button>
+  </div>
+</div>
+
+<div id="toast" class="toast">✔️</div>
+
+<script>
+/* ---------- STATE ---------- */
+const STORAGE_KEY = 'tdtl_state';
+const $ = s => document.querySelector(s);
+
+let state;
+try {
+  state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+} catch {
+  state = {};
+}
+if (!state.players) {
+  state = {
+    players: [],
+    locked: false,
+    showCols: false,
+    sortAsc: true
+  };
+}
+
+/* ---------- HELPERS ---------- */
+function save(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1200);
+}
+function rowClass(p){
+  // applique la couleur de ligne selon présence + montant
+  if (!p.present) return '';
+  if (p.montant == null || p.montant === '') return 'row-yellow';
+  const m = Number(p.montant);
+  if (isNaN(m)) return 'row-yellow';
+  if (m === 0) return 'row-red';
+  return 'row-green';
+}
+
+/* ---------- RENDER TABLE ---------- */
 function render(){
-  const tb=$('#tbody'); tb.textContent='';
+  const tb = $('#tbody');
+  tb.textContent = '';
+
+  // message vide
   $('#empty').style.display = state.players.length ? 'none' : 'block';
-  let cnt={green:0,yellow:0,red:0};
 
-  state.players.forEach(p=>{
-    const tr=document.createElement('tr');
-    const bc=badgeClass(p);
-    if(bc==='green') cnt.green++; else if(bc==='yellow') cnt.yellow++; else if(bc==='red') cnt.red++;
+  let cnt = { green:0, yellow:0, red:0 };
+  let total = 0;
 
-    tr.innerHTML=`
-      <td>${(p.nom||'').toUpperCase()} ${(p.prenom||'')}</td>
-      <td>${p.tel||'—'}</td>
-      <td>${p.mail||'—'}</td>
-      <td style="text-align:center"><input type="checkbox"${p.present?' checked':''}${state.locked?' disabled':''}></td>
-      <td><input type="number" value="${p.montant??''}" style="width:80px"${state.locked?' disabled':''}></td>
-      <td><button class="btn"${state.locked?' disabled':''}>✎</button> <button class="btn danger"${state.locked?' disabled':''}>🗑</button></td>`;
-    const cb=tr.querySelector('input[type=checkbox]');
-    const money=tr.querySelector('input[type=number]');
-    const [edit,del]=tr.querySelectorAll('button');
-    cb.onchange=()=>{p.present=cb.checked;save();render();};
-    money.oninput=()=>{p.montant=money.value===''?null:Number(money.value);save();render();};
-    edit.onclick=()=>{if(state.locked)return;const n=prompt('Nom ?',p.nom||'');if(!n)return;const pr=prompt('Prénom ?',p.prenom||'');if(!pr)return;p.nom=n;p.prenom=pr;save();render();};
-    del.onclick=()=>{if(state.locked)return;if(confirm('Supprimer ?')){state.players=state.players.filter(x=>x!==p);save();render();}};
+  state.players.forEach(p => {
+    const tr = document.createElement('tr');
+
+    // ligne colorée
+    const rc = rowClass(p);
+    if (rc) tr.classList.add(rc);
+
+    // compteurs
+    if (rc === 'row-green') cnt.green++;
+    else if (rc === 'row-yellow') cnt.yellow++;
+    else if (rc === 'row-red') cnt.red++;
+
+    if (p.present && Number(p.montant) > 0) {
+      total += Number(p.montant);
+    }
+
+    tr.innerHTML = `
+      <td>${(p.nom || '').toUpperCase()} ${(p.prenom || '')}</td>
+      <td class="td-tel">${p.tel || '—'}</td>
+      <td class="td-mail">${p.mail || '—'}</td>
+      <td style="text-align:center">
+        <input type="checkbox" ${p.present ? 'checked' : ''} ${state.locked ? 'disabled' : ''}>
+      </td>
+      <td>
+        <input type="number" value="${p.montant ?? ''}" style="width:86px" ${state.locked ? 'disabled' : ''}>
+      </td>
+      <td>
+        <button class="btn" title="Éditer">✎</button>
+        <button class="btn blueLight" title="Supprimer">🗑</button>
+      </td>
+    `;
+
+    // masque Tel / Mail si showCols = false
+    if (!state.showCols) {
+      tr.querySelector('.td-tel').classList.add('hiddenCol');
+      tr.querySelector('.td-mail').classList.add('hiddenCol');
+    }
+
+    // hook des contrôles ligne
+    const cb    = tr.querySelector('input[type=checkbox]');
+    const money = tr.querySelector('input[type=number]');
+    const [editBtn, delBtn] = tr.querySelectorAll('button');
+
+    cb.onchange = () => {
+      p.present = cb.checked;
+      save();
+      render();
+    };
+
+    money.oninput = () => {
+      const rawVal = money.value;
+      p.montant = rawVal === '' ? null : Number(rawVal);
+      save();
+      render();
+    };
+
+    editBtn.onclick = () => {
+      if (state.locked) return;
+      const n    = prompt('Nom ?',    p.nom    || '');
+      if (n === null) return;
+      const pr   = prompt('Prénom ?', p.prenom || '');
+      if (pr === null) return;
+      const tel  = prompt('Téléphone ?', p.tel || '');
+      if (tel === null) return;
+      const mail = prompt('E-mail ?',    p.mail || '');
+      if (mail === null) return;
+
+      p.nom    = n.trim();
+      p.prenom = pr.trim();
+      p.tel    = tel.trim();
+      p.mail   = mail.trim();
+
+      save();
+      render();
+      toast('Modifié');
+    };
+
+    delBtn.onclick = () => {
+      if (state.locked) return;
+      if (confirm('Supprimer cette ligne ?')) {
+        state.players = state.players.filter(x => x !== p);
+        save();
+        render();
+        toast('Supprimé');
+      }
+    };
+
     tb.appendChild(tr);
   });
 
-  $('#statInscrits').textContent=state.players.length;
-  $('#statPresents').textContent=state.players.filter(p=>p.present).length;
-  $('#statTotal').textContent=fmt(state.players.reduce((s,p)=>s+(p.present&&Number(p.montant)>0?Number(p.montant):0),0))+' €';
-  $('#countGreen').textContent=cnt.green;
-  $('#countYellow').textContent=cnt.yellow;
-  $('#countRed').textContent=cnt.red;
+  // stats
+  $('#statInscrits').textContent  = state.players.length;
+  $('#statPresents').textContent  = state.players.filter(p => p.present).length;
+  $('#statTotal').textContent     = total.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+
+  // compteurs pastilles
+  $('#countGreen').textContent  = cnt.green;
+  $('#countYellow').textContent = cnt.yellow;
+  $('#countRed').textContent    = cnt.red;
+
+  // th Tel / Mail masqués ?
+  document.querySelectorAll('thead .th-tel, thead .th-mail').forEach(th=>{
+    th.classList.toggle('hiddenCol', !state.showCols);
+  });
 }
 
-/* Ajout */
-$('#addForm').onsubmit=e=>{
+/* ---------- AJOUT JOUEUR ---------- */
+document.getElementById('addForm').onsubmit = e => {
   e.preventDefault();
-  if(state.locked){toast('🔒 Liste verrouillée');return;}
-  const prenom=$('#prenom').value.trim(),nom=$('#nom').value.trim();
-  if(!prenom||!nom){alert('Nom et prénom requis');return;}
-  state.players.push({prenom,nom,tel:$('#tel').value.trim(),mail:$('#mail').value.trim(),present:false,montant:null});
-  save();render();e.target.reset();toast('Ajouté ✔️');
-};
+  if (state.locked) { toast('🔒'); return; }
 
-/* Sauvegarde */
-$('#saveAll').onclick=()=>{save();toast('Sauvegardé ✔️');};
+  const prenom = $('#prenom').value.trim();
+  const nom    = $('#nom').value.trim();
+  const tel    = $('#tel').value.trim();
+  const mail   = $('#mail').value.trim();
 
-/* Effacer données */
-$('#btnClearData').onclick=()=>{
-  if(state.locked){toast('🔒 Liste verrouillée');return;}
-  if(!confirm('Effacer toutes les cases Présent et montants ?'))return;
-  state.players.forEach(p=>{p.present=false;p.montant=null;});
-  save();render();toast('Données effacées ✔️');
-};
+  if (!prenom || !nom) {
+    alert('Nom et prénom requis');
+    return;
+  }
 
-/* Verrouillage */
-$('#btnLock').onclick=()=>{
-  state.locked=!state.locked;
+  state.players.push({
+    prenom,
+    nom,
+    tel,
+    mail,
+    present:false,
+    montant:null
+  });
+
   save();
-  $('#btnLock').textContent=state.locked?'🔓':'🔒';
-  $('#btnLock').className=state.locked?'btn locked':'btn';
   render();
-};
-$('#btnLock').textContent=state.locked?'🔓':'🔒';
-$('#btnLock').className=state.locked?'btn locked':'btn';
-
-/* Export */
-$('#exportNamesAmounts').onclick=()=>{
-  if(!state.players.length){alert('Rien à exporter');return;}
-  const headers=['Nom complet','Montant'];
-  const rows=state.players.map(p=>[
-    `${(p.nom||'').trim()} ${(p.prenom||'').trim()}`.trim(),
-    (p.montant==null||p.montant==='')?'':String(p.montant)
-  ]);
-  const csv=[headers.join(';')].concat(rows.map(r=>r.join(';'))).join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='noms_montants.csv';
-  document.body.appendChild(a);a.click();a.remove();
+  e.target.reset();
+  toast('Ajouté');
 };
 
-/* Import / Options placeholders */
-$('#btnImport')?.addEventListener('click',()=>toast('Import en préparation'));
-$('#btnOptions')?.addEventListener('click',()=>toast('Options en préparation'));
+/* ---------- VERROUILLAGE ---------- */
+function updateLockButton(){
+  const b = $('#btnLock');
+  if (state.locked) {
+    b.textContent = '🔒';
+    b.className = 'btn locked';
+  } else {
+    b.textContent = '🔓';
+    b.className = 'btn unlocked';
+  }
+}
+$('#btnLock').onclick = () => {
+  state.locked = !state.locked;
+  save();
+  render();
+  updateLockButton();
+};
+updateLockButton();
 
+/* ---------- EFFACER PRÉSENT + MONTANTS ---------- */
+$('#btnClearData').onclick = () => {
+  if (state.locked) { toast('🔒'); return; }
+  if (!confirm('Effacer Présent + Montants pour tout le monde ?')) return;
+
+  state.players.forEach(p => {
+    p.present = false;
+    p.montant = null;
+  });
+
+  save();
+  render();
+  toast('Données effacées');
+};
+
+/* ---------- OPTIONS SHEET ---------- */
+const sheet = $('#sheetOptions');
+$('#btnOptions').onclick = () => {
+  sheet.classList.add('show');
+  sheet.setAttribute('aria-hidden','false');
+};
+$('#btnCloseOptions').onclick = () => {
+  sheet.classList.remove('show');
+  sheet.setAttribute('aria-hidden','true');
+};
+
+/* toggle colonnes Tel/Mail */
+$('#btnToggleCols').onclick = () => {
+  state.showCols = !state.showCols;
+  save();
+  render();
+  toast(state.showCols ? 'Colonnes affichées' : 'Colonnes masquées');
+};
+
+/* supprimer toute la liste */
+$('#btnDeleteAll').onclick = () => {
+  if (state.locked) { toast('🔒'); return; }
+  if (!state.players.length) { toast('Liste vide'); return; }
+  if (confirm('Supprimer TOUTE la liste ?')) {
+    state.players = [];
+    save();
+    render();
+    toast('Liste supprimée');
+  }
+};
+
+/* ---------- IMPORT CSV ---------- */
+/*
+CSV attendu :
+prenom;nom;tel;mail;present;montant
+- séparateur ; ou ,
+- present = 1 / true / oui / o / x
+- montant = nombre (virgule acceptée)
+*/
+$('#btnImport').onclick = () => {
+  if (state.locked) { toast('🔒'); return; }
+
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.csv,text/csv';
+
+  input.onchange = async e => {
+    const f = e.target.files[0];
+    if (!f) return;
+
+    const txt = await f.text();
+
+    const lines = txt
+      .split(/\r?\n/)
+      .map(l=>l.trim())
+      .filter(l=>l!=='');
+    if (lines.length < 2) {
+      alert('Fichier vide');
+      return;
+    }
+
+    // détecter le séparateur
+    const sep = lines[0].includes(';') ? ';' : ',';
+
+    // headers
+    const headers = lines[0].split(sep).map(h=>h.trim().toLowerCase());
+
+    const idx = {
+      prenom:  headers.indexOf('prenom'),
+      nom:     headers.indexOf('nom'),
+      tel:     headers.indexOf('tel'),
+      mail:    headers.indexOf('mail'),
+      present: headers.indexOf('present'),
+      montant: headers.indexOf('montant')
+    };
+
+    // on exige au moins prenom & nom
+    if (idx.prenom < 0 || idx.nom < 0) {
+      alert('Entêtes requis : prenom;nom;tel;mail;present;montant');
+      return;
+    }
+
+    const imported = [];
+
+    for (let i=1;i<lines.length;i++){
+      const cols = lines[i].split(sep);
+
+      const prenom = (cols[idx.prenom]||'').trim();
+      const nom    = (cols[idx.nom]   ||'').trim();
+      const tel    = idx.tel    >=0 ? (cols[idx.tel]   ||'').trim() : '';
+      const mail   = idx.mail   >=0 ? (cols[idx.mail]  ||'').trim() : '';
+
+      // ignorer ligne vide
+      if (!prenom && !nom) continue;
+
+      // Présent
+      let present = false;
+      if (idx.present >= 0) {
+        const rawPres = (cols[idx.present] || '').trim();
+        if (/^(1|true|oui|o|x)$/i.test(rawPres)) {
+          present = true;
+        }
+      }
+
+      // Montant
+      let montant = null;
+      if (idx.montant >= 0) {
+        const rawM = (cols[idx.montant] || '').trim();
+        if (rawM !== '') {
+          const n = Number(rawM.replace(',','.'));
+          if (!isNaN(n)) {
+            montant = n;
+          }
+        }
+      }
+
+      imported.push({
+        prenom,
+        nom,
+        tel,
+        mail,
+        present,
+        montant
+      });
+    }
+
+    if (!imported.length) {
+      alert('Aucune ligne valide');
+      return;
+    }
+
+    if (!confirm(`Importer ${imported.length} lignes ?`)) return;
+
+    state.players = imported;
+    save();
+    render();
+    toast('Importé');
+  };
+
+  input.click();
+};
+
+/* ---------- TRI NOM & PRÉNOM ---------- */
+$('#thName').onclick = () => {
+  state.sortAsc = !state.sortAsc;
+  state.players.sort((a,b)=>{
+    const an = ( (a.nom||'') + ' ' + (a.prenom||'') ).toLowerCase();
+    const bn = ( (b.nom||'') + ' ' + (b.prenom||'') ).toLowerCase();
+    return state.sortAsc ? an.localeCompare(bn) : bn.localeCompare(an);
+  });
+  save();
+  render();
+  toast(state.sortAsc ? 'Tri A→Z' : 'Tri Z→A');
+};
+
+/* ---------- INIT ---------- */
 render();
 </script>
 </body>
