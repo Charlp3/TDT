@@ -248,8 +248,9 @@ tr.row-red{background:#ffe0e0 !important}
 <div class="wrap">
   <div class="card">
     <div class="toolbar">
-      <button class="btn" id="btnImport">📥</button>
+
       <button class="btn" id="btnOptions">⚙️</button>
+<button class="btn" id="btnExportStats" title="Exporter statistiques">📤</button>
       <button class="btn unlocked" id="btnLock">🔓</button>
       <button class="btn blueLight" id="btnClearData">🧹</button>
 
@@ -416,6 +417,57 @@ $('#btnToggleCols').onclick=()=>{state.showCols=!state.showCols;save();render();
 $('#btnDeleteAll').onclick=()=>{if(confirm('Supprimer toute la liste ?')){state.players=[];save();render();}}
 
 render();
+/* ===== EXPORT STATISTIQUES (présents + montants) ===== */
+(function(){
+  const btn = document.getElementById('btnExportStats');
+  if (!btn) return;
+
+  btn.onclick = () => {
+    if (!state.players || !state.players.length) {
+      toast('Aucune donnée');
+      return;
+    }
+
+    const presents = state.players.filter(p => p.present);
+    const totalInscrits = state.players.length;
+    const totalPresents = presents.length;
+
+    let totalMontant = 0;
+
+    const sep = ';';
+    let csv = '\uFEFF';
+
+    // En-tête résumé
+    csv += 'Statistiques\n';
+    csv += `Inscrits${sep}${totalInscrits}\n`;
+    csv += `Présents${sep}${totalPresents}\n\n`;
+
+    // Détail des présents
+    csv += ['Nom', 'Prénom', 'Montant (€)'].join(sep) + '\n';
+
+    presents.forEach(p => {
+      const m = Number(p.montant) || 0;
+      totalMontant += m;
+
+      csv += [
+        `"${(p.nom || '').replace(/"/g,'""')}"`,
+        `"${(p.prenom || '').replace(/"/g,'""')}"`,
+        m.toFixed(2)
+      ].join(sep) + '\n';
+    });
+
+    csv += `\nTotal encaissé${sep}${totalMontant.toFixed(2)} €\n`;
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    // Safari iOS / GitHub Pages : ouverture directe
+    window.open(url, '_blank');
+
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    toast('Statistiques exportées');
+  };
+})();
 </script>
 </body>
 </html>
