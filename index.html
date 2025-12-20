@@ -250,6 +250,7 @@ tr.row-red{background:#ffe0e0 !important}
     <div class="toolbar">
       <button class="btn" id="btnImport">📥</button>
       <button class="btn" id="btnOptions">⚙️</button>
+<button class="btn" id="btnExportStats" title="Exporter statistiques">📊</button>
       <button class="btn unlocked" id="btnLock">🔓</button>
       <button class="btn blueLight" id="btnClearData">🧹</button>
 
@@ -381,6 +382,28 @@ $('#btnToggleCols').onclick=()=>{state.showCols=!state.showCols;save();render();
 $('#btnDeleteAll').onclick=()=>{if(confirm('Supprimer toute la liste ?')){state.players=[];save();render();}}
 
 render();
+/* ===== EXPORT STATISTIQUES CSV ===== */
+$('#btnExportStats').onclick = () => {
+  const inscrits = state.players.length;
+  const presents = state.players.filter(p => p.present).length;
+  const pct = inscrits ? Math.round((presents / inscrits) * 100) : 0;
+  const total = state.players
+    .filter(p => p.present && Number(p.montant) > 0)
+    .reduce((s, p) => s + Number(p.montant), 0);
+
+  const today = new Date().toISOString().slice(0,10);
+
+  const csv =
+    '\uFEFF' +
+    'date;inscrits;presents;pourcentage;total\n' +
+    `${today};${inscrits};${presents};${pct}%;${total.toFixed(2)}`;
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+
+  toast('Statistiques exportées');
+};
 </script>
 </body>
 </html>
