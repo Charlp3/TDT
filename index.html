@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
-<title>TDT v4.0c</title>
+<title>TDT v4.0e</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
 
 <style>
@@ -25,10 +25,15 @@
   --head-ink:#f2f2f7;
 }
 
+/* RESET */
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
+/* === LAYOUT ROOT (CORRECTION CLEF) === */
 body{
   margin:0;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
   color:var(--ink);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,Helvetica,Arial,sans-serif;
   background:linear-gradient(180deg,var(--bg-dark)0,var(--bg-mid)280px,var(--bg-light)100%);
@@ -77,13 +82,25 @@ h1{
 .counter.red{background:#ffd6d6;border-color:var(--bad)}
 .counter.presence{background:#cfe9ff;color:#003b66;border-color:#6dbafc}
 
-/* LAYOUT */
-.wrap{max-width:1100px;margin:0 auto;padding:12px}
+/* WRAP prend TOUT l’espace sous le header */
+.wrap{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  max-width:1100px;
+  margin:0 auto;
+  padding:12px;
+}
+
+/* CARD = colonne flex pleine hauteur */
 .card{
+  flex:1;
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:12px;
   overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
 /* TOOLBAR */
@@ -110,14 +127,8 @@ h1{
   color:#004080;
   border:1px solid rgba(0,122,255,0.25);
 }
-.btn.locked{
-  background:#f5c5c5;
-  color:#900;
-}
-.btn.unlocked{
-  background:#c8f0d2;
-  color:#060;
-}
+.btn.locked{background:#f5c5c5;color:#900}
+.btn.unlocked{background:#c8f0d2;color:#060}
 .stat{
   background:#fff;
   border:1px solid var(--border);
@@ -145,8 +156,13 @@ input{
   border:1px solid #b5b8c0;
 }
 
+/* TABLE ZONE = FLEX:1 (CORRECTION CLEF) */
+.tblWrap{
+  flex:1;
+  overflow:auto;
+}
+
 /* TABLE */
-.tblWrap{max-height:60svh;overflow:auto}
 table{
   width:100%;
   border-collapse:separate;
@@ -170,7 +186,7 @@ tbody td{
 tbody tr:nth-child(odd){background:#f1f2f5}
 tbody tr:nth-child(even){background:#e6e8ed}
 
-/* PRIORITÉ COULEURS ÉTAT */
+/* PRIORITÉ ÉTAT */
 tr.row-green{background:#e0f6e3 !important}
 tr.row-yellow{background:#fff5d6 !important}
 tr.row-red{background:#ffe0e0 !important}
@@ -217,7 +233,7 @@ tr.row-red{background:#ffe0e0 !important}
 <body>
 <header>
   <h1>
-    <span>TDT <span class="version">v4.0c</span></span>
+    <span>TDT <span class="version">v4.0e</span></span>
     <span class="copyright">© Pierre Charlier 2025</span>
     <span class="spacer"></span>
     <div class="counters">
@@ -286,16 +302,11 @@ tr.row-red{background:#ffe0e0 !important}
 <div id="toast" class="toast"></div>
 
 <script>
-/* === LOGIQUE IDENTIQUE À v4.0b === */
-/* (inchangée volontairement) */
-
-/* --- état --- */
 const STORAGE_KEY='tdtl_state';
 const $=s=>document.querySelector(s);
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
 if(!state.players)state={players:[],locked:false,showCols:false};
 
-/* --- helpers --- */
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1200);}
 function rowClass(p){
@@ -307,7 +318,6 @@ function rowClass(p){
   return'row-green';
 }
 
-/* --- render --- */
 function render(){
   const tb=$('#tbody');tb.textContent='';
   let cnt={g:0,y:0,r:0},total=0;
@@ -350,7 +360,6 @@ function render(){
   document.querySelectorAll('.th-tel,.th-mail').forEach(th=>th.classList.toggle('hiddenCol',!state.showCols));
 }
 
-/* --- events --- */
 $('#addForm').onsubmit=e=>{
   e.preventDefault();
   state.players.push({
