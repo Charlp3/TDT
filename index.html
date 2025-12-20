@@ -233,7 +233,7 @@ tr.row-red{background:#ffe0e0 !important}
 <body>
 <header>
   <h1>
-    <span>TDT <span class="version">v4.0e</span></span>
+    <span>TDT <span class="version" id="version">v4.0e</span></span>
     <span class="copyright">© Pierre Charlier 2025</span>
     <span class="spacer"></span>
     <div class="counters">
@@ -248,8 +248,8 @@ tr.row-red{background:#ffe0e0 !important}
 <div class="wrap">
   <div class="card">
     <div class="toolbar">
+      <button class="btn" id="btnImport">📥</button>
       <button class="btn" id="btnOptions">⚙️</button>
-<button class="btn" id="btnExportStats" title="Exporter statistiques">📊</button>
       <button class="btn unlocked" id="btnLock">🔓</button>
       <button class="btn blueLight" id="btnClearData">🧹</button>
 
@@ -270,11 +270,11 @@ tr.row-red{background:#ffe0e0 !important}
       <table>
         <thead>
           <tr>
-            <th>Nom & Prénom</th>
+            <th id="thName">Nom & Prénom</th>
             <th class="th-tel">Téléphone</th>
-            <th class="th-mail">Mail</th>
+            <th class="th-mail">E-mail</th>
             <th>Présent</th>
-            <th>Montant</th>
+            <th>Montant (€)</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -318,6 +318,23 @@ function rowClass(p){
   return'row-green';
 }
 
+/* ===== TRI Nom & Prénom (A↔Z) ===== */
+let sortAsc = true;
+const thName = document.getElementById('thName');
+if(thName){
+  thName.style.cursor='pointer';
+  thName.addEventListener('click', ()=>{
+    sortAsc = !sortAsc;
+    state.players.sort((a,b)=>{
+      const an=((a.nom||'')+' '+(a.prenom||'')).toLowerCase();
+      const bn=((b.nom||'')+' '+(b.prenom||'')).toLowerCase();
+      return sortAsc ? an.localeCompare(bn) : bn.localeCompare(an);
+    });
+    save();
+    render();
+  });
+}
+
 function render(){
   const tb=$('#tbody');tb.textContent='';
   let cnt={g:0,y:0,r:0},total=0;
@@ -336,14 +353,32 @@ function render(){
       <td class="td-mail">${p.mail||'—'}</td>
       <td style="text-align:center"><input type="checkbox"${p.present?' checked':''}${state.locked?' disabled':''}></td>
       <td><input type="number" value="${p.montant??''}"${state.locked?' disabled':''}></td>
-      <td><button class="btn blueLight">🗑</button></td>`;
+      <td><button class="btn btnEdit" title="Éditer">✎</button> <button class="btn blueLight btnDel" title="Supprimer">🗑</button></td>`;
     if(!state.showCols){
       tr.querySelector('.td-tel').classList.add('hiddenCol');
       tr.querySelector('.td-mail').classList.add('hiddenCol');
     }
     tr.querySelector('input[type=checkbox]').onchange=e=>{p.present=e.target.checked;save();render();}
     tr.querySelector('input[type=number]').oninput=e=>{p.montant=e.target.value===''?null:Number(e.target.value);save();render();}
-    tr.querySelector('button').onclick=()=>{if(confirm('Supprimer ?')){state.players=state.players.filter(x=>x!==p);save();render();}}
+
+    const editBtn = tr.querySelector('.btnEdit');
+    const delBtn  = tr.querySelector('.btnDel');
+
+    editBtn.onclick=()=>{
+      if(state.locked){toast('🔒');return;}
+      const nom=prompt('Nom ?',p.nom||''); if(nom===null) return;
+      const prenom=prompt('Prénom ?',p.prenom||''); if(prenom===null) return;
+      const tel=prompt('Tel ?',p.tel||''); if(tel===null) return;
+      const mail=prompt('Mail ?',p.mail||''); if(mail===null) return;
+      p.nom=nom.trim(); p.prenom=prenom.trim(); p.tel=tel.trim(); p.mail=mail.trim();
+      save(); render();
+    };
+
+    delBtn.onclick=()=>{
+      if(state.locked){toast('🔒');return;}
+      if(confirm('Supprimer ?')){state.players=state.players.filter(x=>x!==p); save(); render();}
+    };
+
     tb.appendChild(tr);
   });
 
@@ -381,28 +416,6 @@ $('#btnToggleCols').onclick=()=>{state.showCols=!state.showCols;save();render();
 $('#btnDeleteAll').onclick=()=>{if(confirm('Supprimer toute la liste ?')){state.players=[];save();render();}}
 
 render();
-/* ===== EXPORT STATISTIQUES CSV ===== */
-$('#btnExportStats').onclick = () => {
-  const inscrits = state.players.length;
-  const presents = state.players.filter(p => p.present).length;
-  const pct = inscrits ? Math.round((presents / inscrits) * 100) : 0;
-  const total = state.players
-    .filter(p => p.present && Number(p.montant) > 0)
-    .reduce((s, p) => s + Number(p.montant), 0);
-
-  const today = new Date().toISOString().slice(0,10);
-
-  const csv =
-    '\uFEFF' +
-    'date;inscrits;presents;pourcentage;total\n' +
-    `${today};${inscrits};${presents};${pct}%;${total.toFixed(2)}`;
-
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  window.open(url, '_blank');
-
-  toast('Statistiques exportées');
-};
 </script>
 </body>
 </html>
