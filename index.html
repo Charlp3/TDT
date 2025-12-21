@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
-<title>TDT v4.0e</title>
+<title>TDT v5</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
 
 <style>
@@ -233,7 +233,7 @@ tr.row-red{background:#ffe0e0 !important}
 <body>
 <header>
   <h1>
-    <span>TDT <span class="version" id="version">v4.0e</span></span>
+    <span>TDT <span class="version" id="version">v5</span></span>
     <span class="copyright">© Pierre Charlier 2025</span>
     <span class="spacer"></span>
     <div class="counters">
@@ -248,8 +248,9 @@ tr.row-red{background:#ffe0e0 !important}
 <div class="wrap">
   <div class="card">
     <div class="toolbar">
-
-      <button class="btn" id="btnOptions">⚙️</button>
+<button class="btn" id="btnImportCSV" title="Importer CSV">📥</button>
+      
+<button class="btn" id="btnOptions">⚙️</button>
 <button class="btn" id="btnExportStats" title="Exporter statistiques">📊</button>
       <button class="btn unlocked" id="btnLock">🔓</button>
       <button class="btn blueLight" id="btnClearData">🧹</button>
@@ -466,6 +467,78 @@ render();
 
     setTimeout(() => URL.revokeObjectURL(url), 5000);
     toast('Statistiques exportées');
+  };
+})();
+/* ===== IMPORT CSV (Nom;Prénom;Tel;Mail) ===== */
+(function(){
+  const btn = document.getElementById('btnImportCSV');
+  if(!btn) return;
+
+  // input fichier invisible
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.csv,text/csv';
+
+  btn.onclick = () => {
+    if(state.locked){
+      toast('🔒 Liste verrouillée');
+      return;
+    }
+    input.click();
+  };
+
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if(!file) return;
+
+    if(!confirm('Importer le CSV et remplacer la liste actuelle ?')){
+      input.value='';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result;
+      const lines = text.split(/\r?\n/).filter(l=>l.trim());
+      if(lines.length < 2){
+        toast('CSV invalide');
+        return;
+      }
+
+      const rows = lines.slice(1); // ignore en-tête
+      const newPlayers = [];
+
+      rows.forEach(line=>{
+        const cols = line.split(';');
+        if(cols.length < 2) return;
+
+        const nom    = (cols[0]||'').trim();
+        const prenom = (cols[1]||'').trim();
+        let tel      = (cols[2]||'').trim();
+        const mail   = (cols[3]||'').trim();
+
+        if(tel && !tel.startsWith('0')) tel = '0'+tel;
+
+        if(nom || prenom){
+          newPlayers.push({
+            nom,
+            prenom,
+            tel,
+            mail,
+            present:false,
+            montant:null
+          });
+        }
+      });
+
+      state.players = newPlayers;
+      save();
+      render();
+      toast('CSV importé');
+      input.value='';
+    };
+
+    reader.readAsText(file,'utf-8');
   };
 })();
 </script>
