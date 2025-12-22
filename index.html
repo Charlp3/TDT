@@ -2,10 +2,20 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
-<title>🏓 v5.1</title>
+<title>🏓 v5.2</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
 
 <style>
+/* === MONTANT : chiffres plus grands et en gras === */
+td input[type="number"]{
+  font-size:1.15rem;   /* plus grand */
+  font-weight:700;     /* en gras */
+  text-align:right;    /* plus lisible */
+}
+/* === NOMS & PRÉNOMS EN GRAS === */
+tbody td:first-child{
+  font-weight:700;
+}
 :root{
   --bg-dark:#d1d3d8;
   --bg-mid:#e1e3e8;
@@ -233,7 +243,7 @@ tr.row-red{background:#ffe0e0 !important}
 <body>
 <header>
   <h1>
-    <span>🏓 <span class="version" id="version">v5.1</span></span>
+    <span>🏓 <span class="version" id="version">v5.2</span></span>
     <span class="copyright">© Pierre Charlier 2025</span>
     <span class="spacer"></span>
     <div class="counters">
