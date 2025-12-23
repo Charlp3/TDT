@@ -199,6 +199,13 @@ tbody td{
 tbody tr:nth-child(odd){background:#f1f2f5}
 tbody tr:nth-child(even){background:#e6e8ed}
 
+/* largeur colonne Payé (1 €) */
+.col-paid{
+  width: 90px;
+  min-width: 90px;
+  text-align: center;
+}
+
 /* PRIORITÉ ÉTAT */
 tr.row-green{background:#e0f6e3 !important}
 tr.row-yellow{background:#fff5d6 !important}
@@ -245,7 +252,7 @@ tr.row-yellow{background:#fff5d6 !important}
 <body>
 <header>
   <h1>
-    <span>🏓 <span class="version" id="version">v6.0</span></span>
+    <span>🏓 <span class="version" id="version">v6.1</span></span>
     <span class="copyright">© Pierre Charlier 2025</span>
     <span class="spacer"></span>
     <div class="counters">
@@ -287,7 +294,7 @@ tr.row-yellow{background:#fff5d6 !important}
             <th class="th-tel">Téléphone</th>
             <th class="th-mail">E-mail</th>
             <th>Présent</th>
-            <th>Payé (1 €)</th>
+            <th class="col-paid">Payé (1 €)</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -361,7 +368,7 @@ function render(){
       <td class="td-tel">${p.tel||'—'}</td>
       <td class="td-mail">${p.mail||'—'}</td>
       <td style="text-align:center"><input type="checkbox"${p.present?' checked':''}${state.locked?' disabled':''}></td>
-<td style="text-align:center">
+<td class="col-paid">
   <input type="checkbox" class="chkPaid"
     ${p.paid ? 'checked' : ''}
     ${state.locked ? 'disabled' : ''}>
