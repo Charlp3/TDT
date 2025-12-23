@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
-<title>🏓 v5.3</title>
+<title>🏓 v6.0</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
 
 <style>
@@ -93,7 +93,6 @@ h1{
 }
 .counter.green{background:#c9f2cf;border-color:var(--ok)}
 .counter.yellow{background:#fff2c4;border-color:var(--warn)}
-.counter.red{background:#ffd6d6;border-color:var(--bad)}
 .counter.presence{background:#cfe9ff;color:#003b66;border-color:#6dbafc}
 
 /* WRAP prend TOUT l’espace sous le header */
@@ -203,7 +202,6 @@ tbody tr:nth-child(even){background:#e6e8ed}
 /* PRIORITÉ ÉTAT */
 tr.row-green{background:#e0f6e3 !important}
 tr.row-yellow{background:#fff5d6 !important}
-tr.row-red{background:#ffe0e0 !important}
 
 .hiddenCol{display:none}
 
@@ -247,14 +245,13 @@ tr.row-red{background:#ffe0e0 !important}
 <body>
 <header>
   <h1>
-    <span>🏓 <span class="version" id="version">v5.3</span></span>
+    <span>🏓 <span class="version" id="version">v6.0</span></span>
     <span class="copyright">© Pierre Charlier 2025</span>
     <span class="spacer"></span>
     <div class="counters">
       <div class="counter presence" id="countPresence">0%</div>
       <div class="counter green" id="countGreen">0</div>
       <div class="counter yellow" id="countYellow">0</div>
-      <div class="counter red" id="countRed">0</div>
     </div>
   </h1>
 </header>
@@ -290,7 +287,7 @@ tr.row-red{background:#ffe0e0 !important}
             <th class="th-tel">Téléphone</th>
             <th class="th-mail">E-mail</th>
             <th>Présent</th>
-            <th>Montant (€)</th>
+            <th>Payé (1 €)</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -326,12 +323,9 @@ if(!state.players)state={players:[],locked:false,showCols:false};
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1200);}
 function rowClass(p){
-  if(!p.present)return'';
-  if(p.montant==null||p.montant==='')return'row-yellow';
-  const m=Number(p.montant);
-  if(isNaN(m))return'row-yellow';
-  if(m===0)return'row-red';
-  return'row-green';
+  if(!p.present) return '';
+  if(p.present && p.paid) return 'row-green';
+  return 'row-yellow';
 }
 
 /* ===== TRI Nom & Prénom (A↔Z) ===== */
@@ -360,22 +354,30 @@ function render(){
     if(rc)tr.classList.add(rc);
     if(rc==='row-green')cnt.g++;
     if(rc==='row-yellow')cnt.y++;
-    if(rc==='row-red')cnt.r++;
-    if(p.present&&Number(p.montant)>0)total+=Number(p.montant);
+    if(p.present && p.paid) total += 1;
 
     tr.innerHTML=`
       <td>${p.nom} ${p.prenom}</td>
       <td class="td-tel">${p.tel||'—'}</td>
       <td class="td-mail">${p.mail||'—'}</td>
       <td style="text-align:center"><input type="checkbox"${p.present?' checked':''}${state.locked?' disabled':''}></td>
-      <td><input type="number" value="${p.montant??''}"${state.locked?' disabled':''}></td>
+<td style="text-align:center">
+  <input type="checkbox" class="chkPaid"
+    ${p.paid ? 'checked' : ''}
+    ${state.locked ? 'disabled' : ''}>
+</td>
       <td><button class="btn btnEdit" title="Éditer">✎</button> <button class="btn blueLight btnDel" title="Supprimer">🗑</button></td>`;
     if(!state.showCols){
       tr.querySelector('.td-tel').classList.add('hiddenCol');
       tr.querySelector('.td-mail').classList.add('hiddenCol');
     }
     tr.querySelector('input[type=checkbox]').onchange=e=>{p.present=e.target.checked;save();render();}
-    tr.querySelector('input[type=number]').oninput=e=>{p.montant=e.target.value===''?null:Number(e.target.value);save();render();}
+    const chkPaid = tr.querySelector('.chkPaid');
+chkPaid.onchange = e=>{
+  p.paid = e.target.checked;
+  save();
+  render();
+};
 
     const editBtn = tr.querySelector('.btnEdit');
     const delBtn  = tr.querySelector('.btnDel');
@@ -405,7 +407,6 @@ function render(){
 
   $('#countGreen').textContent=cnt.g;
   $('#countYellow').textContent=cnt.y;
-  $('#countRed').textContent=cnt.r;
   $('#countPresence').textContent=state.players.length?Math.round(pres/state.players.length*100)+'%':'0%';
 
   document.querySelectorAll('.th-tel,.th-mail').forEach(th=>th.classList.toggle('hiddenCol',!state.showCols));
@@ -419,13 +420,19 @@ $('#addForm').onsubmit=e=>{
     tel:$('#tel').value,
     mail:$('#mail').value,
     present:false,
-    montant:null
+paid:false,
+montant:null
   });
   e.target.reset();save();render();
 };
 
 $('#btnLock').onclick=()=>{state.locked=!state.locked;$('#btnLock').className='btn '+(state.locked?'locked':'unlocked');save();render();}
-$('#btnClearData').onclick=()=>{if(confirm('Effacer présence et montants ?')){state.players.forEach(p=>{p.present=false;p.montant=null});save();render();}}
+$('#btnClearData').onclick=()=>{if(confirm('Effacer présence et montants ?')){state.players.forEach(p=>{
+    p.present = false;
+    p.paid = false;
+    p.montant = null;
+});
+save();render();}}
 $('#btnOptions').onclick=()=>$('#sheetOptions').classList.add('show');
 $('#btnCloseOptions').onclick=()=>$('#sheetOptions').classList.remove('show');
 $('#btnToggleCols').onclick=()=>{state.showCols=!state.showCols;save();render();}
@@ -461,8 +468,8 @@ render();
     csv += ['Nom', 'Prénom', 'Montant (€)'].join(sep) + '\n';
 
     presents.forEach(p => {
-      const m = Number(p.montant) || 0;
-      totalMontant += m;
+      const m = p.paid ? 1 : 0;
+totalMontant += m;
 
       csv += [
         `"${(p.nom || '').replace(/"/g,'""')}"`,
