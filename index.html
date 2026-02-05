@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
-<title>🏓 v6.0</title>
+<title>🏓 v6.2</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
 
 <style>
@@ -252,7 +252,7 @@ tr.row-yellow{background:#fff5d6 !important}
 <body>
 <header>
   <h1>
-    <span>🏓 <span class="version" id="version">v6.1</span></span>
+    <span>🏓 <span class="version" id="version">v6.2</span></span>
     <span class="copyright">© Pierre Charlier 2025</span>
     <span class="spacer"></span>
     <div class="counters">
@@ -417,7 +417,10 @@ chkPaid.onchange = e=>{
   $('#countPresence').textContent=state.players.length?Math.round(pres/state.players.length*100)+'%':'0%';
 
   document.querySelectorAll('.th-tel,.th-mail').forEach(th=>th.classList.toggle('hiddenCol',!state.showCols));
-}
+// 🔒 Synchronisation visuelle du bouton cadenas au rendu
+const lockBtn = $('#btnLock');
+lockBtn.className = 'btn ' + (state.locked ? 'locked' : 'unlocked');
+lockBtn.textContent = state.locked ? '🔒' : '🔓';}
 
 $('#addForm').onsubmit=e=>{
   e.preventDefault();
