@@ -1,10 +1,10 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
+<meta charset="utf-8"/>
 <title>TTL4 🏓 v6.2</title>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
-
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" name="viewport"/>
 <style>
 /* === MONTANT : chiffres plus grands et en gras === */
 td input[type="number"]{
@@ -170,9 +170,10 @@ input{
 }
 
 /* TABLE ZONE = FLEX:1 (CORRECTION CLEF) */
-.tblWrap{
+.tbl-wrap{
   flex:1;
   overflow:auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* TABLE */
@@ -211,7 +212,20 @@ tr.row-green{background:#e0f6e3 !important}
 tr.row-yellow{background:#fff5d6 !important}
 
 .hiddenCol{display:none}
+/* SCROLL TABLE SOUS LE TITRE */
+.table-wrap{
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
+/* En-tête du tableau fixe */
+thead th{
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--head);
+}
 /* OPTIONS */
 .sheet{
   position:fixed;
@@ -246,81 +260,79 @@ tr.row-yellow{background:#fff5d6 !important}
   font-size:.8rem;
 }
 .toast.show{opacity:1}
+
+
+html, body{height:100%;}
+body{overflow:hidden;}
+.wrap,.card,.tbl-wrap{min-height:0;}
+.tbl-wrap{-webkit-overflow-scrolling:touch;}
+
 </style>
 </head>
-
 <body>
 <header>
-  <h1>
-    <span>TTL4 🏓 <span class="version" id="version">v6.2</span></span>
-    <span class="copyright">© Pierre Charlier 2025</span>
-    <span class="spacer"></span>
-    <div class="counters">
-      <div class="counter presence" id="countPresence">0%</div>
-      <div class="counter green" id="countGreen">0</div>
-      <div class="counter yellow" id="countYellow">0</div>
-    </div>
-  </h1>
+<h1>
+<span>TTL4 🏓 <span class="version" id="version">v6.3</span></span>
+<span class="copyright">© Pierre Charlier 2025</span>
+<span class="spacer"></span>
+<div class="counters">
+<div class="counter presence" id="countPresence">0%</div>
+<div class="counter green" id="countGreen">0</div>
+<div class="counter yellow" id="countYellow">0</div>
+</div>
+</h1>
 </header>
-
 <div class="wrap">
-  <div class="card">
-    <div class="toolbar">
+<div class="card">
+<div class="toolbar">
 <button class="btn" id="btnImportCSV" title="Importer CSV">📥</button>
-      
 <button class="btn" id="btnOptions">⚙️</button>
 <button class="btn" id="btnExportStats" title="Exporter statistiques">📊</button>
-      <button class="btn unlocked" id="btnLock">🔓</button>
-      <button class="btn blueLight" id="btnClearData">🧹</button>
-
-      <span class="stat">Inscrits: <strong id="statInscrits">0</strong></span>
-      <span class="stat">Présents: <strong id="statPresents">0</strong></span>
-      <span class="stat">Total: <strong id="statTotal">0,00 €</strong></span>
-    </div>
-
-    <form class="add" id="addForm">
-      <div><label>Prénom</label><input id="prenom"></div>
-      <div><label>Nom</label><input id="nom"></div>
-      <div><label>Tel</label><input id="tel"></div>
-      <div><label>Mail</label><input id="mail"></div>
-      <button class="btn">+</button>
-    </form>
-
-    <div class="tblWrap">
-      <table>
-        <thead>
-          <tr>
-            <th id="thName">Nom & Prénom</th>
-            <th class="th-tel">Téléphone</th>
-            <th class="th-mail">E-mail</th>
-            <th>Présent</th>
-            <th class="col-paid">Payé (1 €)</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
-  </div>
+<button class="btn unlocked" id="btnLock">🔓</button>
+<button class="btn blueLight" id="btnClearData">🧹</button>
+<span class="stat">Inscrits: <strong id="statInscrits">0</strong></span>
+<span class="stat">Présents: <strong id="statPresents">0</strong></span>
+<span class="stat">Total: <strong id="statTotal">0,00 €</strong></span>
 </div>
-
-<div id="sheetOptions" class="sheet">
-  <h3>Options</h3>
-  <div class="row">
-    <span>Afficher Tel & Mail</span>
-    <button class="btn" id="btnToggleCols">👁️</button>
-  </div>
-  <div class="row">
-    <span>Supprimer toute la liste</span>
-    <button class="btn blueLight" id="btnDeleteAll">🗑</button>
-  </div>
-  <div class="actions">
-    <button class="btn" id="btnCloseOptions">✕</button>
-  </div>
+<form class="add" id="addForm">
+<div><label>Prénom</label><input id="prenom"/></div>
+<div><label>Nom</label><input id="nom"/></div>
+<div><label>Tel</label><input id="tel"/></div>
+<div><label>Mail</label><input id="mail"/></div>
+<button class="btn">+</button>
+</form>
+<div class="tbl-wrap">
+<table>
+<thead>
+<tr>
+<th id="thName">Nom &amp; Prénom</th>
+<th class="th-tel">Téléphone</th>
+<th class="th-mail">E-mail</th>
+<th>Présent</th>
+<th class="col-paid">Payé (1 €)</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
 </div>
-
-<div id="toast" class="toast"></div>
-
+</div>
+</div>
+<div class="sheet" id="sheetOptions">
+<h3>Options</h3>
+<div class="row">
+<span>Afficher Tel &amp; Mail</span>
+<button class="btn" id="btnToggleCols">👁️</button>
+</div>
+<div class="row">
+<span>Supprimer toute la liste</span>
+<button class="btn blueLight" id="btnDeleteAll">🗑</button>
+</div>
+<div class="actions">
+<button class="btn" id="btnCloseOptions">✕</button>
+</div>
+</div>
+<div class="toast" id="toast"></div>
 <script>
 const STORAGE_KEY='tdtl_state';
 const $=s=>document.querySelector(s);
